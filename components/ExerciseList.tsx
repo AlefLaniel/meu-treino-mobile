@@ -7,7 +7,13 @@ import { Checkbox } from "./ui/checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SheetsContext } from "~/contexts/context";
 import { SheetsContextType } from "~/contexts/types";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 import { Button } from "./ui/button";
 import ExerciseForm from "./forms/ExerciseForm";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -30,7 +36,7 @@ export default function ExerciseList({
   const renderExercise = ({ item }: { item: Exercise }) => (
     <Card className="py-4 mb-4">
       <CardContent className="flex-row justify-between items-start">
-      <View className="flex-1">
+        <View className="flex-1">
           <TouchableOpacity
             onPress={() => onToggleCompletion(item.id)}
             className="flex-row items-center mb-2"
@@ -93,7 +99,6 @@ export default function ExerciseList({
             </Text>
           </TouchableOpacity>
         </View>
-
       </CardContent>
     </Card>
   );
@@ -109,39 +114,51 @@ export default function ExerciseList({
 
   return (
     <View className="p-4">
-      <View className="flex-row justify-between items-center mb-4">
-        <Text className="text-xl font-bold text-gray-900">Exercícios</Text>
-        <Dialog
-          open={isExerciseModalOpen}
-          onOpenChange={setIsExerciseModalOpen}
-        >
-          <DialogTrigger asChild>
-            <Button className="flex flex-row gap-2 bg-indigo-600 rounded-lg">
-            <Plus size={20} color="white" />
-            <Text className="text-white font-medium">Novo Exercício</Text>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="h-auto w-96">
-            <DialogHeader>
-              <DialogTitle>{editingExercise ? "Editar Exercício" : "Novo Exercício"}</DialogTitle>
-            </DialogHeader>
-            <ExerciseForm
-              exercise={editingExercise}
-              onSubmit={editingExercise ? (data) => handleEditExercise({ ...editingExercise, ...data }) : handleAddExercise}
-              onCancel={() => {
-                setIsExerciseModalOpen(false);
-                setEditingExercise(null);
-              }}
-              />
-          </DialogContent>
-        </Dialog>
-      </View>
-
       {exercises.length > 0 && (
         <FlatList
           data={exercises}
           keyExtractor={(item) => item.id}
           renderItem={renderExercise}
+          ListHeaderComponent={() => (
+            <View className="flex-row justify-between items-center mb-4">
+              <Text className="text-xl font-bold text-gray-900">
+                Exercícios
+              </Text>
+              <Dialog
+                open={isExerciseModalOpen}
+                onOpenChange={setIsExerciseModalOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button className="flex flex-row gap-2 bg-indigo-600 rounded-lg">
+                    <Plus size={20} color="white" />
+                    <Text className="text-white font-medium">
+                      Novo Exercício
+                    </Text>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="h-auto w-96">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingExercise ? "Editar Exercício" : "Novo Exercício"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <ExerciseForm
+                    exercise={editingExercise}
+                    onSubmit={
+                      editingExercise
+                        ? (data) =>
+                            handleEditExercise({ ...editingExercise, ...data })
+                        : handleAddExercise
+                    }
+                    onCancel={() => {
+                      setIsExerciseModalOpen(false);
+                      setEditingExercise(null);
+                    }}
+                  />
+                </DialogContent>
+              </Dialog>
+            </View>
+          )}
           contentContainerStyle={{ paddingBottom: 20 }}
           ListEmptyComponent={() => (
             <View className="py-6">
