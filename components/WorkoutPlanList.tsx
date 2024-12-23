@@ -17,6 +17,7 @@ import { SheetsContextType } from "~/contexts/types";
 import { SheetsContext } from "~/contexts/context";
 import { Button } from "./ui/button";
 import WorkoutPlanForm from "./forms/WorkoutPlanForm";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 
 interface Props {
   plans: WorkoutPlan[];
@@ -98,9 +99,9 @@ export default function WorkoutPlanList({
         data={plans}
         keyExtractor={(item) => item.id}
         renderItem={({ item: plan }) => (
-          <View className="mt-4 shadow-sm p-4 bg-white rounded-lg  transition-shadow mb-4">
-            <View className="flex-row justify-between items-start mb-2">
-              <View className="flex flex-row items-center gap-2">
+          <Card key={plan.id} className="mb-3 mt-3">
+            <CardHeader className="flex-row justify-between items-start mb-2">
+            <View className="flex flex-row items-center gap-2">
                 <Checkbox
                   checked={plan?.done ?? false}
                   onCheckedChange={() => onSelect(plan)}
@@ -123,19 +124,21 @@ export default function WorkoutPlanList({
                   <MaterialIcons name="delete" size={20} color="#4A5568" />
                 </TouchableOpacity>
               </View>
-            </View>
-
+            </CardHeader>
+            <CardContent>
             <Text className="text-sm text-gray-600 mb-4">
               {plan.exercises.length} exercícios
             </Text>
-
+            </CardContent>
+            <CardFooter>
             <TouchableOpacity
               onPress={() => onSelect(plan)}
               className="w-full px-4 py-2 text-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-50"
             >
               <Text className="text-indigo-600">Ver Exercícios</Text>
             </TouchableOpacity>
-          </View>
+            </CardFooter>
+          </Card>
         )}
         ListEmptyComponent={() => (
           <View className="text-center py-6 text-gray-500">

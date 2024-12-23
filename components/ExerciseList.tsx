@@ -10,6 +10,7 @@ import { SheetsContextType } from "~/contexts/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 import ExerciseForm from "./forms/ExerciseForm";
+import { Card, CardContent, CardHeader } from "./ui/card";
 
 interface Props {
   exercises: Exercise[];
@@ -27,9 +28,9 @@ export default function ExerciseList({
   onToggleCompletion,
 }: Props) {
   const renderExercise = ({ item }: { item: Exercise }) => (
-    <View className="shadow-sm p-4 bg-white rounded-lg mb-4">
-      <View className="flex-row justify-between items-start">
-        <View className="flex-1">
+    <Card className="py-4 mb-4">
+      <CardContent className="flex-row justify-between items-start">
+      <View className="flex-1">
           <TouchableOpacity
             onPress={() => onToggleCompletion(item.id)}
             className="flex-row items-center mb-2"
@@ -92,8 +93,9 @@ export default function ExerciseList({
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+
+      </CardContent>
+    </Card>
   );
 
   const {
@@ -135,19 +137,20 @@ export default function ExerciseList({
         </Dialog>
       </View>
 
-      {exercises.length > 0 ? (
+      {exercises.length > 0 && (
         <FlatList
           data={exercises}
           keyExtractor={(item) => item.id}
           renderItem={renderExercise}
           contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={() => (
+            <View className="py-6">
+              <Text className="text-center text-gray-500">
+                Nenhum exercício cadastrado neste plano.
+              </Text>
+            </View>
+          )}
         />
-      ) : (
-        <View className="py-6">
-          <Text className="text-center text-gray-500">
-            Nenhum exercício cadastrado neste plano.
-          </Text>
-        </View>
       )}
     </View>
   );
