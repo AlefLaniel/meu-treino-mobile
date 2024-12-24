@@ -98,6 +98,7 @@ export default function WorkoutPlanList({
                 <Checkbox
                   checked={plan?.done ?? false}
                   onCheckedChange={() => onSelect(plan)}
+                  disabled={true}
                 />
                 <Text className="text-lg font-semibold text-gray-800">
                   {plan.name}

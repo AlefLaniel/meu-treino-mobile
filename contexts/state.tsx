@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
 import { getWorkoutSheets, saveWorkoutSheets } from "~/utils/storage";
 import { v4 as uuidv4 } from "uuid";
+import { Alert } from "react-native";
 
 export const SheetsState = () => {
   const [sheets, setSheets] = useState<WorkoutSheet[]>([]);
@@ -48,8 +49,10 @@ export const SheetsState = () => {
 
     setSheets([...(sheets || []), newSheet]); // Garante que sheets é iterável
     setSelectedSheet(newSheet); // Selecione a nova ficha após a criação
+    Alert.alert("Sucesso", "Ficha de treino criada com sucesso!");
     setIsSheetModalOpen(false); // Fechar o modal após adicionar
     setEditingSheet(null); // Resetar o estado de edição
+    
   };
 
   const handleEditSheet = (
@@ -65,11 +68,29 @@ export const SheetsState = () => {
     );
     setIsSheetModalOpen(false);
     setEditingSheet(null);
+    Alert.alert("Sucesso", "Ficha de treino editada com sucesso!");
   };
 
   const handleDeleteSheet = (id: string) => {
-    setSheets(sheets.filter((sheet) => sheet.id !== id));
-    if (selectedSheet?.id === id) setSelectedSheet(null);
+    Alert.alert(
+      "Confirmação",
+      "Você tem certeza que deseja deletar esta ficha?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Deletar",
+          onPress: () => {
+            setSheets((prevSheets) => prevSheets.filter((sheet) => sheet.id !== id));
+            Alert.alert("Ficha de treino deletada com sucesso!");
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   // Plan operations
@@ -90,7 +111,10 @@ export const SheetsState = () => {
       )
     );
     setSelectedSheet(updatedSheet);
+    setSelectedPlan(newPlan);
+    Alert.alert("Sucesso", "Plano de treino criado com sucesso!");
     setIsPlanModalOpen(false);
+   
   };
 
   const handleEditPlan = (data: Pick<WorkoutPlan, "name">) => {
@@ -106,23 +130,40 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === editingPlan.id) ?? null);
+    Alert.alert("Sucesso", "Plano de treino editado com sucesso!");
     setIsPlanModalOpen(false);
     setEditingPlan(null);
+    
   };
 
   const handleDeletePlan = (id: string) => {
-    if (!selectedSheet) return;
-    const updatedSheet = {
-      ...selectedSheet,
-      plans: selectedSheet.plans.filter((plan) => plan.id !== id),
-    };
-    setSheets(
-      sheets.map((sheet) =>
-        sheet.id === selectedSheet.id ? updatedSheet : sheet
-      )
+    Alert.alert(
+      "Confirmação",
+      "Você tem certeza que deseja deletar este plano?",
+      [{
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Deletar",
+        onPress: () => {
+          if (!selectedSheet) return;
+          const updatedSheet = {
+            ...selectedSheet,
+            plans: selectedSheet.plans.filter((plan) => plan.id !== id),
+          };
+          setSheets(
+            sheets.map((sheet) =>
+              sheet.id === selectedSheet.id ? updatedSheet : sheet
+            )
+          );
+          setSelectedSheet(updatedSheet);
+          setSelectedPlan(null);
+          Alert.alert("Plano de treino deletado com sucesso!");
+        },
+        style: "destructive",
+      }]
     );
-    setSelectedSheet(updatedSheet);
-    if (selectedPlan?.id === id) setSelectedPlan(null);
   };
 
   // Exercise operations
@@ -145,7 +186,9 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === selectedPlan.id) ?? null);
+    Alert.alert("Sucesso", "Exercício criado com sucesso!");
     setIsExerciseModalOpen(false);
+    
   };
 
   const handleEditExercise = (data: Omit<Exercise, "id">) => {
@@ -170,32 +213,58 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === selectedPlan.id) ?? null);
+    Alert.alert("Sucesso", "Exercício editado com sucesso!");
     setIsExerciseModalOpen(false);
     setEditingExercise(null);
+    
   };
 
-  const handleDeleteExercise = (id: string) => {
+  const 
+  handleDeleteExercise = (id: string) => {
+    Alert.alert(
+      "Confirmação",
+      "Você tem certeza que deseja deletar este exercício?",
+      [{
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Deletar",
+        onPress: () => {
+          if (!selectedSheet || !selectedPlan) return;
+          const updatedPlans = selectedSheet.plans.map((plan) =>
+            plan.id === selectedPlan.id
+              ? {
+                  ...plan,
+                  exercises: plan.exercises.filter(
+                    (exercise) => exercise.id !== id
+                  ),
+                }
+              : plan
+          );
+          const updatedSheet = { ...selectedSheet, plans: updatedPlans };
+          setSheets(
+            sheets.map((sheet) =>
+              sheet.id === selectedSheet.id ? updatedSheet : sheet
+            )
+          );
+          setSelectedSheet(updatedSheet);
+          setSelectedPlan(
+            updatedPlans.find((p) => p.id === selectedPlan.id) ?? null
+          );
+          Alert.alert("Exercício deletado com sucesso!");
+        },
+        style: "destructive",
+      }],
+      { cancelable: true }
+    );
     if (
       !selectedSheet ||
       !selectedPlan
     )
       return;
-    const updatedPlans = selectedSheet.plans.map((plan) =>
-      plan.id === selectedPlan.id
-        ? {
-            ...plan,
-            exercises: plan.exercises.filter((exercise) => exercise.id !== id),
-          }
-        : plan
-    );
-    const updatedSheet = { ...selectedSheet, plans: updatedPlans };
-    setSheets(
-      sheets.map((sheet) =>
-        sheet.id === selectedSheet.id ? updatedSheet : sheet
-      )
-    );
-    setSelectedSheet(updatedSheet);
-    setSelectedPlan(updatedPlans.find((p) => p.id === selectedPlan.id) ?? null);
+  
+    Alert.alert("Sucesso", "Exercício deletado com sucesso!");
   };
 
   const handleToggleExerciseCompletion = (id: string) => {

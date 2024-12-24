@@ -33,7 +33,7 @@ const Home = () => {
   } = useContext(SheetsContext) as SheetsContextType;
 
   return (
-    <SafeAreaView className="min-h-screen bg-gray-100">
+    <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <ScrollView className="mb-14">
         <View className="max-w-7xl px-4 py-8">
           {!selectedSheet ? (
