@@ -52,8 +52,8 @@ export default function WorkoutSheetList({
         style={{ marginBottom: 50 }}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={() => (
-          <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-2xl font-bold text-gray-900">
+          <View className="flex justify-between mb-4">
+            <Text className="text-2xl font-bold text-gray-900 mb-3">
               Fichas de Treino
             </Text>
             <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen}>

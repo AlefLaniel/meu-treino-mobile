@@ -47,11 +47,11 @@ export default function WorkoutPlanList({
 
   return (
     <View className="space-y-4">
-      <View className="flex-row justify-between items-center">
-        <Text className="text-xl font-bold text-gray-900">
+      <View className="flex justify-between">
+        <Text className="text-xl font-bold text-gray-900 mb-3 mt-1">
           Planos de Treino
         </Text>
-        <View className="flex-row gap-3">
+        <View className="flex-row justify-between gap-3">
           <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
             <DialogTrigger asChild>
               <Button className="flex flex-row bg-indigo-600">
