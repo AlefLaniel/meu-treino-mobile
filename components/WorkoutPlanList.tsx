@@ -47,7 +47,8 @@ export default function WorkoutPlanList({
 
   return (
     <View className="space-y-4">
-      <View className="flex justify-between">
+      {plans === null || plans.length === 0 ? (
+        <View className="flex justify-between">
         <Text className="text-xl font-bold text-gray-900 mb-3 mt-1">
           Planos de Treino
         </Text>
@@ -87,8 +88,8 @@ export default function WorkoutPlanList({
           </TouchableOpacity>
         </View>
       </View>
-
-      <FlatList
+      ) : (
+        <FlatList
         data={plans}
         keyExtractor={(item) => item.id}
         renderItem={({ item: plan }) => (
@@ -134,12 +135,58 @@ export default function WorkoutPlanList({
             </CardFooter>
           </Card>
         )}
+        ListHeaderComponent={() => (
+          <View className="flex justify-between">
+          <Text className="text-xl font-bold text-gray-900 mb-3 mt-1">
+            Planos de Treino
+          </Text>
+          <View className="flex-row justify-between gap-3">
+            <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
+              <DialogTrigger asChild>
+                <Button className="flex flex-row bg-indigo-600">
+                  <MaterialIcons name="add" size={20} color="#fff" />
+                  <Text className="text-white">Novo Plano</Text>
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingPlan ? "Editar Plano" : "Novo Plano"}
+                  </DialogTitle>
+                </DialogHeader>
+                <WorkoutPlanForm
+                  plan={editingPlan}
+                  onSubmit={
+                    editingPlan
+                      ? (data) => handleEditPlan({ ...editingPlan, ...data })
+                      : handleAddPlan
+                  }
+                  onCancel={() => {
+                    setIsPlanModalOpen(false);
+                    setEditingPlan(null);
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+            <TouchableOpacity
+              onPress={resetDone}
+              className="flex-row items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            >
+              <Text className="text-white">Resetar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        )}
         ListEmptyComponent={() => (
           <View className="text-center py-6 text-gray-500">
             <Text>Nenhum plano de treino cadastrado nesta ficha.</Text>
           </View>
         )}
+        className="mb-36"
       />
+      )}
+
+      
     </View>
   );
 }

@@ -34,8 +34,8 @@ const Home = () => {
 
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
-      <ScrollView className="mb-14">
-        <View className="max-w-7xl px-4 py-8">
+        
+        <View className="px-4 py-8 flex-1">
           {!selectedSheet ? (
             <WorkoutSheetList
               sheets={sheets}
@@ -79,7 +79,8 @@ const Home = () => {
               />
             </View>
           ) : (
-            <View className="space-y-6">
+            <ScrollView>
+              <View className="space-y-6 mb-16">
               <View className="flex flex-row items-center gap-2">
                 <Button
                   variant="link"
@@ -117,9 +118,9 @@ const Home = () => {
                 </Button>
               </View>
             </View>
+            </ScrollView>
           )}
         </View>
-      </ScrollView>
     </SafeAreaView>
   );
 };
