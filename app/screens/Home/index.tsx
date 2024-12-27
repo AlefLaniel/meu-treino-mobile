@@ -62,7 +62,7 @@ const Home = () => {
                     color="#151618FF"
                   />
                 </Button>
-                <Text className="text-2xl font-bold text-gray-900">
+                <Text className="text-2xl font-bold text-gray-900 dark:text-white">
                   {selectedSheet.name}
                 </Text>
               </View>
@@ -85,7 +85,7 @@ const Home = () => {
                 <Button
                   variant="link"
                   onPress={() => setSelectedPlan(null)}
-                  className="flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900"
+                  className="flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-white"
                 >
                   <MaterialIcons
                     className="-mb-2"
@@ -94,7 +94,7 @@ const Home = () => {
                     color="#151618FF"
                   />
                 </Button>
-                <Text className="text-2xl font-bold text-gray-900">
+                <Text className="text-2xl font-bold text-gray-900 dark:text-white">
                   {selectedPlan.name}
                 </Text>
               </View>
@@ -114,7 +114,7 @@ const Home = () => {
                   onPress={resetCompleted}
                   className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
-                  <Text>Finalizar Exercícios</Text>
+                  <Text className="dark:text-white">Finalizar Exercícios</Text>
                 </Button>
               </View>
             </View>

@@ -45,49 +45,55 @@ export default function WorkoutPlanList({
     handleAddPlan,
   } = useContext(SheetsContext) as SheetsContextType;
 
+  const HeaderList = () => {
+    return (
+      <View className="flex justify-between mb-4">
+        <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+          Planos de Treino
+        </Text>
+        <View className="flex flex-row justify-between">
+        <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex flex-row bg-indigo-600">
+              <MaterialIcons name="add" size={20} color="#fff" />
+              <Text className="text-white">Novo Plano</Text>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingPlan ? "Editar Plano" : "Novo Plano"}
+              </DialogTitle>
+            </DialogHeader>
+            <WorkoutPlanForm
+              plan={editingPlan}
+              onSubmit={
+                editingPlan
+                  ? (data) => handleEditPlan({ ...editingPlan, ...data })
+                  : handleAddPlan
+              }
+              onCancel={() => {
+                setIsPlanModalOpen(false);
+                setEditingPlan(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+        <TouchableOpacity
+          onPress={resetDone}
+          className="flex-row items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+        >
+          <Text className="text-white">Resetar</Text>
+        </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <View className="space-y-4">
       {plans === null || plans.length === 0 ? (
-        <View className="flex justify-between">
-        <Text className="text-xl font-bold text-gray-900 mb-3 mt-1">
-          Planos de Treino
-        </Text>
-        <View className="flex-row justify-between gap-3">
-          <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex flex-row bg-indigo-600">
-                <MaterialIcons name="add" size={20} color="#fff" />
-                <Text className="text-white">Novo Plano</Text>
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {editingPlan ? "Editar Plano" : "Novo Plano"}
-                </DialogTitle>
-              </DialogHeader>
-              <WorkoutPlanForm
-                plan={editingPlan}
-                onSubmit={
-                  editingPlan
-                    ? (data) => handleEditPlan({ ...editingPlan, ...data })
-                    : handleAddPlan
-                }
-                onCancel={() => {
-                  setIsPlanModalOpen(false);
-                  setEditingPlan(null);
-                }}
-              />
-            </DialogContent>
-          </Dialog>
-          <TouchableOpacity
-            onPress={resetDone}
-            className="flex-row items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
-            <Text className="text-white">Resetar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+       <HeaderList />
       ) : (
         <FlatList
         data={plans}
@@ -101,7 +107,7 @@ export default function WorkoutPlanList({
                   onCheckedChange={() => onSelect(plan)}
                   disabled={true}
                 />
-                <Text className="text-lg font-semibold text-gray-800">
+                <Text className="text-lg font-semibold text-gray-800 dark:text-white">
                   {plan.name}
                 </Text>
               </View>
@@ -136,46 +142,7 @@ export default function WorkoutPlanList({
           </Card>
         )}
         ListHeaderComponent={() => (
-          <View className="flex justify-between">
-          <Text className="text-xl font-bold text-gray-900 mb-3 mt-1">
-            Planos de Treino
-          </Text>
-          <View className="flex-row justify-between gap-3">
-            <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
-              <DialogTrigger asChild>
-                <Button className="flex flex-row bg-indigo-600">
-                  <MaterialIcons name="add" size={20} color="#fff" />
-                  <Text className="text-white">Novo Plano</Text>
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingPlan ? "Editar Plano" : "Novo Plano"}
-                  </DialogTitle>
-                </DialogHeader>
-                <WorkoutPlanForm
-                  plan={editingPlan}
-                  onSubmit={
-                    editingPlan
-                      ? (data) => handleEditPlan({ ...editingPlan, ...data })
-                      : handleAddPlan
-                  }
-                  onCancel={() => {
-                    setIsPlanModalOpen(false);
-                    setEditingPlan(null);
-                  }}
-                />
-              </DialogContent>
-            </Dialog>
-            <TouchableOpacity
-              onPress={resetDone}
-              className="flex-row items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-            >
-              <Text className="text-white">Resetar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+          <HeaderList />
         )}
         ListEmptyComponent={() => (
           <View className="text-center py-6 text-gray-500">

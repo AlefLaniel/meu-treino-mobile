@@ -45,53 +45,58 @@ export default function WorkoutSheetList({
     handleAddSheet,
   } = useContext(SheetsContext) as SheetsContextType;
 
+  const HeaderList = () => {
+
+    return (
+      <View className="flex justify-between mb-4">
+        <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+          Fichas de Treino
+        </Text>
+        <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex flex-row bg-indigo-600">
+              <MaterialIcons name="add" size={20} color="#fff" />
+              <Text className="text-white">Nova Ficha</Text>
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingSheet ? "Editar Ficha" : "Nova Ficha"}
+              </DialogTitle>
+            </DialogHeader>
+            <WorkoutSheetForm
+              sheet={editingSheet}
+              onSubmit={
+                editingSheet
+                  ? (data) => handleEditSheet({ ...editingSheet, ...data })
+                  : (data) =>
+                      handleAddSheet(
+                        data as Omit<
+                          WorkoutSheet,
+                          "id" | "plans" | "createdAt"
+                        >
+                      )
+              }
+              onCancel={() => {
+                setIsSheetModalOpen(false);
+                setEditingSheet(null);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      </View>
+    )
+  }
+
   return (
     <View className="space-y-4">
       <FlatList
         data={sheets}
         style={{ marginBottom: 50 }}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => (
-          <View className="flex justify-between mb-4">
-            <Text className="text-2xl font-bold text-gray-900 mb-3">
-              Fichas de Treino
-            </Text>
-            <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen}>
-              <DialogTrigger asChild>
-                <Button className="flex flex-row bg-indigo-600">
-                  <MaterialIcons name="add" size={20} color="#fff" />
-                  <Text className="text-white">Nova Ficha</Text>
-                </Button>
-              </DialogTrigger>
-
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingSheet ? "Editar Ficha" : "Nova Ficha"}
-                  </DialogTitle>
-                </DialogHeader>
-                <WorkoutSheetForm
-                  sheet={editingSheet}
-                  onSubmit={
-                    editingSheet
-                      ? (data) => handleEditSheet({ ...editingSheet, ...data })
-                      : (data) =>
-                          handleAddSheet(
-                            data as Omit<
-                              WorkoutSheet,
-                              "id" | "plans" | "createdAt"
-                            >
-                          )
-                  }
-                  onCancel={() => {
-                    setIsSheetModalOpen(false);
-                    setEditingSheet(null);
-                  }}
-                />
-              </DialogContent>
-            </Dialog>
-          </View>
-        )}
+        ListHeaderComponent={() => <HeaderList />}
         renderItem={({ item: sheet }) => (
           <Card key={sheet.id} className="mb-4">
             <CardHeader className="flex-row justify-between items-start">
