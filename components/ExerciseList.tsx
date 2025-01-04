@@ -148,7 +148,7 @@ export default function ExerciseList({
 
       {exercises.length > 0 && (
         <FlatList
-          className="space-y-4 mb-32"
+          className="space-y-4"
           data={exercises}
           keyExtractor={(item) => item.id}
           renderItem={renderExercise}

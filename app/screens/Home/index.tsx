@@ -80,7 +80,7 @@ const Home = () => {
             </View>
           ) : 
           selectedPlan?.exercises ? (
-            <View className="space-y-6 mb-16">
+            <View className="space-y-6 mb-72">
             <View className="flex flex-row items-center gap-2">
               <Button
                 variant="link"
