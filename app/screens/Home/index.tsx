@@ -78,7 +78,8 @@ const Home = () => {
                 resetDone={resetDone}
               />
             </View>
-          ) : (
+          )
+          : (
             <ScrollView>
               <View className="space-y-6 mb-16">
               <View className="flex flex-row items-center gap-2">

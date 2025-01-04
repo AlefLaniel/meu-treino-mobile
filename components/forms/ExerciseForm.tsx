@@ -22,11 +22,11 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
   };
 
   return (
-    <ScrollView className="p-4 bg-white">
+    <ScrollView className="p-4 bg-white dark:bg-gray-800 text-white">
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Nome do Exercício</Text>
+        <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Nome do Exercício</Text>
         <Input
-          className="border border-gray-300 rounded-md p-2 text-base"
+          className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
           value={name}
           onChangeText={setName}
           placeholder="Digite o nome do exercício"
@@ -35,9 +35,9 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
 
       <View className="flex flex-row justify-between mb-4">
         <View className="flex-1 mr-2">
-          <Text className="text-sm font-medium text-gray-700 mb-2">Séries</Text>
+          <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Séries</Text>
           <Input
-            className="border border-gray-300 rounded-md p-2 text-base"
+            className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
             value={String(sets)}
             onChangeText={(text) => setSets(Number(text))}
             keyboardType="numeric"
@@ -45,9 +45,9 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
         </View>
 
         <View className="flex-1 mx-2">
-          <Text className="text-sm font-medium text-gray-700 mb-2">Repetições</Text>
+          <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Repetições</Text>
           <Input
-            className="border border-gray-300 rounded-md p-2 text-base"
+            className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
             value={String(reps)}
             onChangeText={(text) => setReps(Number(text))}
             keyboardType="numeric"
@@ -55,9 +55,9 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
         </View>
 
         <View className="flex-1 ml-2">
-          <Text className="text-sm font-medium text-gray-700 mb-2">Peso (kg)</Text>
+          <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Peso (kg)</Text>
           <Input
-            className="border border-gray-300 rounded-md p-2 text-base"
+            className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
             value={String(weight)}
             onChangeText={(text) => setWeight(Number(text))}
             keyboardType="numeric"
@@ -66,9 +66,9 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
       </View>
 
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Observações</Text>
+        <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Observações</Text>
         <Input
-          className="border border-gray-300 rounded-md p-2 text-base"
+          className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
           value={notes}
           onChangeText={setNotes}
           placeholder="Digite observações (opcional)"

@@ -26,11 +26,11 @@ export default function WorkoutPlanForm({ plan, onSubmit, onCancel }: Props) {
   };
 
   return (
-    <View className="p-4 bg-white">
+    <View className="p-4 bg-white dark:bg-gray-800 text-white">
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Nome do Plano</Text>
+        <Text className="text-sm font-medium text-gray-700 mb-2 text-white">Nome do Plano</Text>
         <Input
-          className="border border-gray-300 rounded-md p-2 text-base"
+          className="border border-gray-300 rounded-md p-2 text-base dark:text-white"
           value={name}
           onChangeText={(text) => {
             setName(text);

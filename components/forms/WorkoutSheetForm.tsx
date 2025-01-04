@@ -26,11 +26,11 @@ export default function WorkoutSheetForm({ sheet, onSubmit, onCancel }: Props) {
   };
 
   return (
-    <View className="p-4 bg-white">
+    <View className="p-4 bg-white dark:bg-gray-800 text-white">
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Nome da Ficha</Text>
+        <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Nome da Ficha</Text>
         <Input
-          className={`border rounded-md p-2 text-base ${
+          className={`border rounded-md p-2 text-base dark:text-white ${
             error ? 'border-red-500' : 'border-gray-300'
           }`}
           value={name}
@@ -46,9 +46,9 @@ export default function WorkoutSheetForm({ sheet, onSubmit, onCancel }: Props) {
       </View>
 
       <View className="mb-4">
-        <Text className="text-sm font-medium text-gray-700 mb-2">Descrição</Text>
+        <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">Descrição</Text>
         <Input
-          className="border rounded-md p-2 text-base border-gray-300"
+          className="border rounded-md p-2 text-base dark:text-white border-gray-300"
           value={description}
           onChangeText={setDescription}
           placeholder="Adicione uma descrição (opcional)"
