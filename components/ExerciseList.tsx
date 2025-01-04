@@ -122,7 +122,7 @@ export default function ExerciseList({
           <Text className="text-white font-medium">Novo Exercício</Text>
           </Button>
         </DialogTrigger>
-        <DialogContent className="h-auto w-96">
+        <DialogContent className="h-auto w-96 dark:bg-gray-800">
           <DialogHeader>
             <DialogTitle>{editingExercise ? "Editar Exercício" : "Novo Exercício"}</DialogTitle>
           </DialogHeader>
@@ -148,6 +148,7 @@ export default function ExerciseList({
 
       {exercises.length > 0 && (
         <FlatList
+          className="space-y-4 mb-32"
           data={exercises}
           keyExtractor={(item) => item.id}
           renderItem={renderExercise}
@@ -156,7 +157,7 @@ export default function ExerciseList({
           ListHeaderComponent={() => <HeaderList />}
           ListEmptyComponent={() => (
             <View className="py-6">
-              <Text className="text-center text-gray-500">
+              <Text className="text-center text-gray-500 dark:text-white">
                 Nenhum exercício cadastrado neste plano.
               </Text>
             </View>

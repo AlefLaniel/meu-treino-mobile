@@ -59,7 +59,7 @@ export default function WorkoutPlanList({
               <Text className="text-white">Novo Plano</Text>
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="dark:bg-gray-800">
             <DialogHeader>
               <DialogTitle>
                 {editingPlan ? "Editar Plano" : "Novo Plano"}
@@ -145,7 +145,7 @@ export default function WorkoutPlanList({
           <HeaderList />
         )}
         ListEmptyComponent={() => (
-          <View className="text-center py-6 text-gray-500">
+          <View className="text-center py-6 text-gray-500 dark:text-white">
             <Text>Nenhum plano de treino cadastrado nesta ficha.</Text>
           </View>
         )}

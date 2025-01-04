@@ -78,49 +78,48 @@ const Home = () => {
                 resetDone={resetDone}
               />
             </View>
-          )
-          : (
-            <ScrollView>
-              <View className="space-y-6 mb-16">
-              <View className="flex flex-row items-center gap-2">
-                <Button
-                  variant="link"
-                  onPress={() => setSelectedPlan(null)}
-                  className="flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-white"
-                >
-                  <MaterialIcons
-                    className="-mb-2"
-                    name="arrow-back"
-                    size={28}
-                    color="#151618FF"
-                  />
-                </Button>
-                <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {selectedPlan.name}
-                </Text>
-              </View>
-              <ExerciseList
-                exercises={selectedPlan.exercises}
-                onAdd={() => setIsExerciseModalOpen(true)}
-                onEdit={(exercise) => {
-                  setEditingExercise(exercise);
-                  setIsExerciseModalOpen(true);
-                }}
-                onDelete={handleDeleteExercise}
-                onToggleCompletion={handleToggleExerciseCompletion}
-              />
-              <View className="flex justify-between">
-                {/* Botão de reset */}
-                <Button
-                  onPress={resetCompleted}
-                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  <Text className="dark:text-white">Finalizar Exercícios</Text>
-                </Button>
-              </View>
+          ) : 
+          selectedPlan?.exercises ? (
+            <View className="space-y-6 mb-16">
+            <View className="flex flex-row items-center gap-2">
+              <Button
+                variant="link"
+                onPress={() => setSelectedPlan(null)}
+                className="flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-white"
+              >
+                <MaterialIcons
+                  className="-mb-2"
+                  name="arrow-back"
+                  size={28}
+                  color="#151618FF"
+                />
+              </Button>
+              <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+                {selectedPlan?.name}
+              </Text>
             </View>
-            </ScrollView>
-          )}
+            <ExerciseList
+              exercises={selectedPlan?.exercises}
+              onAdd={() => setIsExerciseModalOpen(true)}
+              onEdit={(exercise) => {
+                setEditingExercise(exercise);
+                setIsExerciseModalOpen(true);
+              }}
+              onDelete={handleDeleteExercise}
+              onToggleCompletion={handleToggleExerciseCompletion}
+            />
+            <View className="flex justify-between">
+              {/* Botão de reset */}
+              <Button
+                onPress={resetCompleted}
+                className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                <Text className="dark:text-white">Finalizar Exercícios</Text>
+              </Button>
+            </View>
+          </View>
+          )
+          : null}
         </View>
     </SafeAreaView>
   );

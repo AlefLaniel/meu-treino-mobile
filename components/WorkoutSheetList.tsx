@@ -52,7 +52,7 @@ export default function WorkoutSheetList({
         <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
           Fichas de Treino
         </Text>
-        <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen}>
+        <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen} className="dark:bg-gray-800">
           <DialogTrigger asChild>
             <Button className="flex flex-row bg-indigo-600">
               <MaterialIcons name="add" size={20} color="#fff" />
@@ -60,7 +60,7 @@ export default function WorkoutSheetList({
             </Button>
           </DialogTrigger>
 
-          <DialogContent>
+          <DialogContent className="dark:bg-gray-800">
             <DialogHeader>
               <DialogTitle>
                 {editingSheet ? "Editar Ficha" : "Nova Ficha"}
@@ -137,7 +137,7 @@ export default function WorkoutSheetList({
           </Card>
         )}
         ListEmptyComponent={() => (
-          <View className="text-center py-8 text-gray-500">
+          <View className="text-center py-8 text-gray-500 dark:text-white">
             <Text>
               Nenhuma ficha de treino cadastrada. Crie uma nova ficha para
               começar!
