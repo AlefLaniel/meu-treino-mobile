@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useContext } from "react";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import { SafeAreaView, ScrollView, useColorScheme, View } from "react-native";
 import ExerciseList from "~/components/ExerciseList";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -8,10 +8,14 @@ import WorkoutPlanList from "~/components/WorkoutPlanList";
 import WorkoutSheetList from "~/components/WorkoutSheetList";
 import { SheetsContext } from "~/contexts/context";
 import { SheetsContextType } from "~/contexts/types";
+import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
 
 // import { Container } from './styles';
 
 const Home = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+
   const {
     resetCompleted,
     handleToggleExerciseCompletion,
@@ -25,12 +29,45 @@ const Home = () => {
     setSelectedPlan,
     selectedPlan,
     sheets,
+    setSheets,
     selectedSheet,
     setSelectedSheet,
     setIsSheetModalOpen,
     setEditingSheet,
     handleDeleteSheet,
   } = useContext(SheetsContext) as SheetsContextType;
+
+  const handleReorder = (newSheets: WorkoutSheet[]) => {
+    setSheets(newSheets);
+  };
+
+  const handleReorderPlans = (newPlans: WorkoutPlan[]) => {
+    if (!selectedSheet) return;
+    const newSheets = sheets.map((sheet) => {
+      if (sheet.id === selectedSheet.id) {
+        return { ...sheet, plans: newPlans };
+      }
+      return sheet;
+    });
+    setSheets(newSheets);
+  }
+  
+  const handleReorderExercises = (newExercises: Exercise[]) => {
+    if (!selectedPlan) return;
+    const newPlans = selectedSheet?.plans.map((plan) => {
+      if (plan.id === selectedPlan.id) {
+        return { ...plan, exercises: newExercises };
+      }
+      return plan;
+    }) || [];
+    const newSheets = sheets.map((sheet) => {
+      if (sheet.id === selectedSheet?.id) {
+        return { ...sheet, plans: newPlans };
+      }
+      return sheet;
+    });
+    setSheets(newSheets);
+  };
 
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -46,6 +83,7 @@ const Home = () => {
                 setIsSheetModalOpen(true);
               }}
               onDelete={handleDeleteSheet}
+              onReorder={handleReorder}
             />
           ) : !selectedPlan ? (
             <View className="space-y-6">
@@ -59,7 +97,7 @@ const Home = () => {
                   <MaterialIcons
                     name="arrow-back"
                     size={28}
-                    color="#151618FF"
+                    color={isDarkMode ? "#FFFFFF" : "#151618FF"}
                   />
                 </Button>
                 <Text className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -76,6 +114,7 @@ const Home = () => {
                 }}
                 onDelete={handleDeletePlan}
                 resetDone={resetDone}
+                onReorder={handleReorderPlans}
               />
             </View>
           ) : 
@@ -91,7 +130,7 @@ const Home = () => {
                   className="-mb-2"
                   name="arrow-back"
                   size={28}
-                  color="#151618FF"
+                  color={isDarkMode ? "#FFFFFF" : "#151618FF"}
                 />
               </Button>
               <Text className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -107,6 +146,7 @@ const Home = () => {
               }}
               onDelete={handleDeleteExercise}
               onToggleCompletion={handleToggleExerciseCompletion}
+              onReorder={handleReorderExercises}
             />
             <View className="flex justify-between">
               {/* Botão de reset */}

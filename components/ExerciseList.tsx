@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Exercise } from "../types/workout";
@@ -18,6 +18,7 @@ interface Props {
   onEdit: (exercise: Exercise) => void;
   onDelete: (id: string) => void;
   onToggleCompletion: (id: string) => void;
+  onReorder: (newExercises: Exercise[]) => void;
 }
 
 export default function ExerciseList({
@@ -26,8 +27,40 @@ export default function ExerciseList({
   onEdit,
   onDelete,
   onToggleCompletion,
+  onReorder,
 }: Props) {
-  const renderExercise = ({ item }: { item: Exercise }) => (
+
+  const [newExercises, setNewExercises] = useState<Exercise[]>(exercises);
+
+  useEffect(() => {
+    setNewExercises(exercises);
+  }, [exercises]);
+
+  const moveUp = (index: number) => {
+    if (index <= 0) {
+      Alert.alert('Aviso', 'O exercício já está na primeira posição.');
+      return;
+    }
+
+    const updatedExercises = [...newExercises];
+    [updatedExercises[index], updatedExercises[index - 1]] = [updatedExercises[index - 1], updatedExercises[index]];
+    setNewExercises(updatedExercises);
+    onReorder(updatedExercises);
+  };
+
+  const moveDown = (index: number) => {
+    if (index >= newExercises.length - 1) {
+      Alert.alert('Aviso', 'O exercício já está na última posição.');
+      return;
+    }
+
+    const updatedExercises = [...newExercises];
+    [updatedExercises[index], updatedExercises[index + 1]] = [updatedExercises[index + 1], updatedExercises[index]];
+    setNewExercises(updatedExercises);
+    onReorder(updatedExercises);
+  };
+
+  const renderExercise = ({ item, index }: { item: Exercise, index: number }) => (
     <Card className="py-4 mb-4">
       <CardContent className="flex-row justify-between items-start">
       <View className="flex-1">
@@ -92,6 +125,18 @@ export default function ExerciseList({
               <MaterialIcons name="delete" size={20} color="#EF4444" />
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => moveUp(index)}
+            className="p-2 rounded-full bg-gray-200"
+          >
+            <MaterialIcons name="arrow-upward" size={20} color="#464A45FF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => moveDown(index)}
+            className="p-2 rounded-full bg-gray-200"
+          >
+            <MaterialIcons name="arrow-downward" size={20} color="#464A45FF" />
+          </TouchableOpacity>
         </View>
 
       </CardContent>
@@ -149,7 +194,7 @@ export default function ExerciseList({
       {exercises.length > 0 && (
         <FlatList
           className="space-y-4"
-          data={exercises}
+          data={newExercises}
           keyExtractor={(item) => item.id}
           renderItem={renderExercise}
           keyboardShouldPersistTaps="handled" 

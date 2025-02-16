@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Trash2 } from "~/lib/icons/Trash2";
 import { Edit } from "~/lib/icons/Edit";
@@ -26,6 +26,7 @@ interface Props {
   onEdit: (plan: WorkoutPlan) => void;
   onDelete: (id: string) => void;
   resetDone: () => void;
+  onReorder: (newPlans: WorkoutPlan[]) => void;
 }
 
 export default function WorkoutPlanList({
@@ -35,6 +36,7 @@ export default function WorkoutPlanList({
   onEdit,
   onDelete,
   resetDone,
+  onReorder
 }: Props) {
   const {
     isPlanModalOpen,
@@ -44,6 +46,33 @@ export default function WorkoutPlanList({
     handleEditPlan,
     handleAddPlan,
   } = useContext(SheetsContext) as SheetsContextType;
+  const [newPlans, setNewPlans] = useState<WorkoutPlan[]>(plans);
+
+  useEffect(() => {
+    setNewPlans(plans);
+  }, [plans]);
+
+  const moveUp = (index: number) => {
+    if (index <= 0) {
+      Alert.alert('Aviso', 'O plano já está na primeira posição.');
+      return;
+    }
+
+    [newPlans[index - 1], newPlans[index]] = [newPlans[index], newPlans[index - 1]];
+    onReorder(newPlans);
+  };
+
+
+  const moveDown = (index: number) => {
+    if (index >= plans.length - 1) {
+      Alert.alert('Aviso', 'O plano já está na última posição.');
+      return;
+    }
+
+    [newPlans[index + 1], newPlans[index]] = [newPlans[index], newPlans[index + 1]];
+    onReorder(newPlans);
+  };
+
 
   const HeaderList = () => {
     return (
@@ -96,9 +125,9 @@ export default function WorkoutPlanList({
        <HeaderList />
       ) : (
         <FlatList
-        data={plans}
+        data={newPlans}
         keyExtractor={(item) => item.id}
-        renderItem={({ item: plan }) => (
+        renderItem={({ item: plan, index }) => (
           <Card key={plan.id} className="mb-3 mt-3">
             <CardHeader className="flex-row justify-between items-start mb-2">
             <View className="flex flex-row items-center gap-2">
@@ -114,16 +143,28 @@ export default function WorkoutPlanList({
               <View className="flex-row gap-2">
                 <TouchableOpacity
                   onPress={() => onEdit(plan)}
-                  className="p-1 text-gray-600 hover:text-indigo-600"
+                  className="p-2 rounded-full bg-gray-200"
                 >
-                  <MaterialIcons name="edit" size={20} color="#4A5568" />
+                  <MaterialIcons name="edit" size={20} color="#3ad625" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => onDelete(plan.id)}
-                  className="p-1 text-gray-600 hover:text-red-600"
+                  className="p-2 rounded-full bg-gray-200"
                 >
-                  <MaterialIcons name="delete" size={20} color="#4A5568" />
+                  <MaterialIcons name="delete" size={20} color="#EF4444" />
                 </TouchableOpacity>
+                <TouchableOpacity
+                onPress={() => moveUp(index)}
+                className="p-2 rounded-full bg-gray-200"
+              >
+                <MaterialIcons name="arrow-upward" size={20} color="#464A45FF" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => moveDown(index)}
+                className="p-2 rounded-full bg-gray-200"
+              >
+                <MaterialIcons name="arrow-downward" size={20} color="#464A45FF" />
+              </TouchableOpacity>
               </View>
             </CardHeader>
             <CardContent>
@@ -145,8 +186,8 @@ export default function WorkoutPlanList({
           <HeaderList />
         )}
         ListEmptyComponent={() => (
-          <View className="text-center py-6 text-gray-500 dark:text-white">
-            <Text>Nenhum plano de treino cadastrado nesta ficha.</Text>
+          <View className="text-center py-6 text-gray-500">
+            <Text className="dark:text-white">Nenhum plano de treino cadastrado nesta ficha.</Text>
           </View>
         )}
         className="mb-36"

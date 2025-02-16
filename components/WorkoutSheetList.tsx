@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 import { WorkoutSheet } from "../types/workout";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -27,6 +27,7 @@ interface Props {
   onAdd: () => void;
   onEdit: (sheet: WorkoutSheet) => void;
   onDelete: (id: string) => void;
+  onReorder: (newSheets: WorkoutSheet[]) => void;
 }
 
 export default function WorkoutSheetList({
@@ -35,6 +36,7 @@ export default function WorkoutSheetList({
   onAdd,
   onEdit,
   onDelete,
+  onReorder
 }: Props) {
   const {
     isSheetModalOpen,
@@ -44,6 +46,27 @@ export default function WorkoutSheetList({
     handleEditSheet,
     handleAddSheet,
   } = useContext(SheetsContext) as SheetsContextType;
+
+  const moveUp = (index: number) => {
+    if (index <= 0) {
+      Alert.alert('Aviso', 'A ficha já está na primeira posição.');
+      return;
+    }
+    const newSheets = [...sheets];
+    [newSheets[index - 1], newSheets[index]] = [newSheets[index], newSheets[index - 1]];
+    onReorder(newSheets);
+  };
+
+  const moveDown = (index: number) => {
+    if (index >= sheets.length - 1) {
+      Alert.alert('Aviso', 'A ficha já está na última posição.');
+      return;
+    }
+    const newSheets = [...sheets];
+    [newSheets[index + 1], newSheets[index]] = [newSheets[index], newSheets[index + 1]];
+    onReorder(newSheets);
+  };
+
 
   const HeaderList = () => {
 
@@ -104,15 +127,21 @@ export default function WorkoutSheetList({
               <View className="flex-row gap-2 -mt-3">
                 <TouchableOpacity
                   onPress={() => onEdit(sheet)}
-                  className="p-1 text-gray-600 hover:text-indigo-600"
+                  className="p-2 rounded-full bg-gray-200"
                 >
-                  <MaterialIcons name="edit" size={20} color="#4A5568" />
+                  <MaterialIcons name="edit" size={20} color="#3ad625" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => onDelete(sheet.id)}
-                  className="p-1 text-gray-600 hover:text-red-600"
+                  className="p-2 rounded-full bg-gray-200"
                 >
-                  <MaterialIcons name="delete" size={20} color="#4A5568" />
+                  <MaterialIcons name="delete" size={20} color="#EF4444" />
+                </TouchableOpacity>
+                <TouchableOpacity  className="p-2 rounded-full bg-gray-200">
+                  <MaterialIcons name="arrow-upward" size={20} color="#464A45FF" onPress={() => moveUp(sheets.indexOf(sheet))} />
+                </TouchableOpacity>
+                <TouchableOpacity  className="p-2 rounded-full bg-gray-200">
+                  <MaterialIcons name="arrow-downward" size={20} color="#464A45FF" onPress={() => moveDown(sheets.indexOf(sheet))} />
                 </TouchableOpacity>
               </View>
             </CardHeader>
@@ -137,8 +166,8 @@ export default function WorkoutSheetList({
           </Card>
         )}
         ListEmptyComponent={() => (
-          <View className="text-center py-8 text-gray-500 dark:text-white">
-            <Text>
+          <View className="text-center py-8 text-gray-500">
+            <Text className="dark:text-white">
               Nenhuma ficha de treino cadastrada. Crie uma nova ficha para
               começar!
             </Text>
