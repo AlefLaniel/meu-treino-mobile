@@ -73,7 +73,7 @@ export default function ExerciseList({
               onCheckedChange={() => onToggleCompletion(item.id)}
             />
             <Text
-              className={`ml-2 text-lg font-semibold ${
+              className={`ml-2 text-lg font-semibold w-32 ${
                 item.completed ? "text-gray-400 line-through" : "text-gray-800 dark:text-white"
               }`}
             >

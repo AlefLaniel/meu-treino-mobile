@@ -136,7 +136,7 @@ export default function WorkoutPlanList({
                   onCheckedChange={() => onSelect(plan)}
                   disabled={true}
                 />
-                <Text className="text-lg font-semibold text-gray-800 dark:text-white">
+                <Text className="text-lg font-semibold text-gray-800 dark:text-white w-44">
                   {plan.name}
                 </Text>
               </View>
