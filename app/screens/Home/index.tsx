@@ -9,6 +9,7 @@ import WorkoutSheetList from "~/components/WorkoutSheetList";
 import { SheetsContext } from "~/contexts/context";
 import { SheetsContextType } from "~/contexts/types";
 import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
+import FlashMessage from "react-native-flash-message";
 
 // import { Container } from './styles';
 
@@ -71,7 +72,7 @@ const Home = () => {
 
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
-        
+        <FlashMessage position="top" />
         <View className="px-4 py-8 flex-1">
           {!selectedSheet ? (
             <WorkoutSheetList
