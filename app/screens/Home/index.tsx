@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useContext } from "react";
-import { SafeAreaView, ScrollView, useColorScheme, View } from "react-native";
+import { Alert, SafeAreaView, ScrollView, useColorScheme, View } from "react-native";
 import ExerciseList from "~/components/ExerciseList";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -12,6 +12,9 @@ import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
 import FlashMessage from "react-native-flash-message";
 import backupData from "~/utils/backupData";
 import restoreData from "~/utils/restoreData";
+import { generateHTML } from "~/utils/pdf";
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 
 // import { Container } from './styles';
 
@@ -39,6 +42,22 @@ const Home = () => {
     setEditingSheet,
     handleDeleteSheet,
   } = useContext(SheetsContext) as SheetsContextType;
+
+  const handleGeneratePDF = async () => {
+    try {
+      const htmlContent = generateHTML(sheets);
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+      Alert.alert('PDF Gerado', `Arquivo PDF criado em: ${uri}`);
+      
+      // Se desejar, você pode compartilhar o PDF:
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível gerar o PDF.');
+      console.error(error);
+    }
+  };
 
   const handleReorder = (newSheets: WorkoutSheet[]) => {
     setSheets(newSheets);
@@ -80,6 +99,11 @@ const Home = () => {
           onPress={() => backupData()}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           ><Text>Fazer Backup</Text></Button>
+          <Button
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          onPress={handleGeneratePDF}>
+            <Text>Gerar PDF</Text>
+          </Button>
           <Button 
           onPress={() => restoreData()}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
