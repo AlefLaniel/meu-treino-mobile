@@ -3,6 +3,7 @@ import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
 import { getWorkoutSheets, saveWorkoutSheets } from "~/utils/storage";
 import { v4 as uuidv4 } from "uuid";
 import { Alert } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 export const SheetsState = () => {
   const [sheets, setSheets] = useState<WorkoutSheet[]>([]);
@@ -49,7 +50,11 @@ export const SheetsState = () => {
 
     setSheets([...(sheets || []), newSheet]); // Garante que sheets é iterável
     setSelectedSheet(newSheet); // Selecione a nova ficha após a criação
-    Alert.alert("Sucesso", "Ficha de treino criada com sucesso!");
+    showMessage({
+      message: "Ficha de treino criada com sucesso!",
+      type: "success",
+      duration: 2000,
+    });
     setIsSheetModalOpen(false); // Fechar o modal após adicionar
     setEditingSheet(null); // Resetar o estado de edição
     
@@ -68,7 +73,12 @@ export const SheetsState = () => {
     );
     setIsSheetModalOpen(false);
     setEditingSheet(null);
-    Alert.alert("Sucesso", "Ficha de treino editada com sucesso!");
+    showMessage({
+      message: "Ficha de treino editada com sucesso!",
+      type: "success",
+      duration: 2000,
+    })
+    
   };
 
   const handleDeleteSheet = (id: string) => {
@@ -84,7 +94,11 @@ export const SheetsState = () => {
           text: "Deletar",
           onPress: () => {
             setSheets((prevSheets) => prevSheets.filter((sheet) => sheet.id !== id));
-            Alert.alert("Ficha de treino deletada com sucesso!");
+            showMessage({
+              message: "Ficha de treino deletada com sucesso!",
+              type: "success",
+              duration: 2000,
+            });
           },
           style: "destructive",
         },
@@ -112,7 +126,11 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(newPlan);
-    Alert.alert("Sucesso", "Plano de treino criado com sucesso!");
+    showMessage({
+      message: "Plano de treino criado com sucesso!",
+      type: "success",
+      duration: 2000,
+    });
     setIsPlanModalOpen(false);
    
   };
@@ -130,7 +148,11 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === editingPlan.id) ?? null);
-    Alert.alert("Sucesso", "Plano de treino editado com sucesso!");
+    showMessage({
+      message: "Plano de treino editado com sucesso!",
+      type: "success",
+      duration: 2000,
+    })
     setIsPlanModalOpen(false);
     setEditingPlan(null);
     
@@ -159,7 +181,11 @@ export const SheetsState = () => {
           );
           setSelectedSheet(updatedSheet);
           setSelectedPlan(null);
-          Alert.alert("Plano de treino deletado com sucesso!");
+          showMessage({
+            message: "Plano de treino deletado com sucesso!",
+            type: "success",
+            duration: 2000,
+          });
         },
         style: "destructive",
       }]
@@ -186,7 +212,11 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === selectedPlan.id) ?? null);
-    Alert.alert("Sucesso", "Exercício criado com sucesso!");
+    showMessage({
+      message: "Exercício criado com sucesso!",
+      type: "success",
+      duration: 2000,
+    });
     setIsExerciseModalOpen(false);
     
   };
@@ -213,7 +243,11 @@ export const SheetsState = () => {
     );
     setSelectedSheet(updatedSheet);
     setSelectedPlan(updatedPlans.find((p) => p.id === selectedPlan.id) ?? null);
-    Alert.alert("Sucesso", "Exercício editado com sucesso!");
+   showMessage({
+      message: "Exercício editado com sucesso!",
+      type: "success",
+      duration: 2000,
+    });
     setIsExerciseModalOpen(false);
     setEditingExercise(null);
     
@@ -252,7 +286,11 @@ export const SheetsState = () => {
           setSelectedPlan(
             updatedPlans.find((p) => p.id === selectedPlan.id) ?? null
           );
-          Alert.alert("Exercício deletado com sucesso!");
+          showMessage({
+            message: "Exercício deletado com sucesso!",
+            type: "success",
+            duration: 2000,
+          });
         },
         style: "destructive",
       }],
@@ -263,8 +301,12 @@ export const SheetsState = () => {
       !selectedPlan
     )
       return;
-  
-    Alert.alert("Sucesso", "Exercício deletado com sucesso!");
+    
+    showMessage({
+      message: "Exercício deletado com sucesso!",
+      type: "success",
+      duration: 2000,
+    });
   };
 
   const handleToggleExerciseCompletion = (id: string) => {
