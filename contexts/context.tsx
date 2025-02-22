@@ -39,7 +39,8 @@ const SheetsProvider = ({ children }: Props) => {
         handleDeleteExercise,
         handleToggleExerciseCompletion,
         resetCompleted,
-        resetDone, } = SheetsState()
+        resetDone, 
+    } = SheetsState()
 
 
     return (

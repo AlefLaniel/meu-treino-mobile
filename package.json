@@ -3,6 +3,7 @@
   "main": "index.js",
   "version": "1.0.0",
   "scripts": {
+    "start": "expo start -c",
     "dev": "expo start -c --ios",
     "dev:web": "expo start -c --web",
     "dev:android": "expo start -c --android",
@@ -38,6 +39,7 @@
     "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "expo-system-ui": "~4.0.8",
+    "expo-updates": "~0.27.1",
     "lucide-react-native": "^0.378.0",
     "nativewind": "^4.1.23",
     "react": "18.3.1",

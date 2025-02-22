@@ -9,12 +9,13 @@ import WorkoutSheetList from "~/components/WorkoutSheetList";
 import { SheetsContext } from "~/contexts/context";
 import { SheetsContextType } from "~/contexts/types";
 import { Exercise, WorkoutPlan, WorkoutSheet } from "~/types/workout";
-import FlashMessage from "react-native-flash-message";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 import backupData from "~/utils/backupData";
 import restoreData from "~/utils/restoreData";
 import { generateHTML } from "~/utils/pdf";
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import * as Updates from 'expo-updates';
 
 // import { Container } from './styles';
 
@@ -47,16 +48,41 @@ const Home = () => {
     try {
       const htmlContent = generateHTML(sheets);
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
-      Alert.alert('PDF Gerado', `Arquivo PDF criado em: ${uri}`);
+      showMessage({
+        message: "PDF Gerado",
+        description: `Arquivo PDF criado em: ${uri}`,
+        type: "success",
+        duration: 3000,
+        icon: "success",
+      })
       
       // Se desejar, você pode compartilhar o PDF:
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
       }
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível gerar o PDF.');
+      showMessage({
+        message: "Erro",
+        description: "Não foi possível gerar o PDF.",
+        type: "danger",
+        duration: 3000,
+        icon: "danger",
+      })
       console.error(error);
     }
+  };
+
+  const restaurarBackup = async () => {
+    await restoreData();
+   setTimeout(async () => {
+    await Updates.reloadAsync(); // Recarrega a aplicação
+   }, 3000);
+   showMessage({
+     message: "Backup restaurado com sucesso!",
+      type: "success",
+      duration: 3000,
+      icon: "success",
+    })
   };
 
   const handleReorder = (newSheets: WorkoutSheet[]) => {
@@ -105,7 +131,7 @@ const Home = () => {
             <Text>Gerar PDF</Text>
           </Button>
           <Button 
-          onPress={() => restoreData()}
+          onPress={() => restaurarBackup()}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           ><Text>Restuarar Backup</Text></Button>
         </View>

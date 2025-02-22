@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WorkoutSheet } from '../types/workout';
 
-const STORAGE_KEY = 'workout-sheets';
+export const STORAGE_KEY = 'workout-sheets';
 
 // Função para obter as fichas de treino
 export const getWorkoutSheets = async (): Promise<WorkoutSheet[]> => {

@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { STORAGE_KEY } from './storage';
 
 async function backupData() {
   try {
     // Recupera os dados salvos no AsyncStorage
-    const data = await AsyncStorage.getItem('workout-sheets');
+    const data = await AsyncStorage.getItem(STORAGE_KEY);
     if (data) {
       // Define a pasta de backup
       const backupFolder = FileSystem.documentDirectory + 'backups/';
