@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert, Modal } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Exercise } from "../types/workout";
 import { Checkbox } from "./ui/checkbox";
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "./ui/button";
 import ExerciseForm from "./forms/ExerciseForm";
 import { Card, CardContent, CardHeader } from "./ui/card";
+import { showMessage } from "react-native-flash-message";
 
 interface Props {
   exercises: Exercise[];
@@ -31,14 +32,46 @@ export default function ExerciseList({
 }: Props) {
 
   const [newExercises, setNewExercises] = useState<Exercise[]>(exercises);
+  const [isRestModalVisible, setIsRestModalVisible] = useState(false);
+  const [restTime, setRestTime] = useState(60);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setNewExercises(exercises);
   }, [exercises]);
 
+  const startRestTimer = () => {
+    setIsRestModalVisible(true);
+    setRestTime(60);
+    const interval = setInterval(() => {
+      setRestTime((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(interval);
+          setIsRestModalVisible(false);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+    setTimer(interval);
+  };
+
+  const handleToggleCompletion = (id: string, completed: boolean) => {
+    onToggleCompletion(id);
+    if (!completed) {
+      startRestTimer();
+    }
+  };
+
   const moveUp = (index: number) => {
     if (index <= 0) {
-      Alert.alert('Aviso', 'O exercício já está na primeira posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'O exercício já está na primeira posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
 
@@ -50,7 +83,13 @@ export default function ExerciseList({
 
   const moveDown = (index: number) => {
     if (index >= newExercises.length - 1) {
-      Alert.alert('Aviso', 'O exercício já está na última posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'O exercício já está na última posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
 
@@ -65,12 +104,12 @@ export default function ExerciseList({
       <CardContent className="flex-row justify-between items-start">
       <View className="flex-1">
           <TouchableOpacity
-            onPress={() => onToggleCompletion(item.id)}
+             onPress={() => handleToggleCompletion(item.id, item.completed || false)}
             className="flex-row items-center mb-2"
           >
             <Checkbox
               checked={item.completed || false}
-              onCheckedChange={() => onToggleCompletion(item.id)}
+              onCheckedChange={() => handleToggleCompletion(item.id, item.completed || false)}
             />
             <Text
               className={`ml-2 text-lg font-semibold w-32 ${
@@ -209,6 +248,40 @@ export default function ExerciseList({
           )}
         />
       )}
+
+<Modal
+        visible={isRestModalVisible}
+        transparent={true}
+        animationType="slide"
+        className="flex-1 justify-center items-center bg-black/80"
+      >
+        <View className="flex-1 justify-center items-center bg-black/80">
+          <View className="bg-white p-6 rounded-lg w-[50%]">
+            <Text className="text-xl font-bold mb-4">Tempo de Descanso</Text>
+            <Text className="text-2xl font-bold mb-4">{restTime} segundos</Text>
+            <View className="flex-row justify-between">
+              <Button
+              className="bg-red-500"
+              onPress={() => setRestTime((prev) => Math.max(prev - 5, 0))} >
+                <Text>-5s</Text>
+              </Button>
+              <Button 
+              className="bg-green-500"
+              onPress={() => setRestTime((prev) => prev + 5)}>
+                <Text>+5s</Text>
+              </Button>
+            </View>
+            <Button 
+            className="bg-gray-200 mt-4"
+            onPress={() => {
+              if (timer) clearInterval(timer);
+              setIsRestModalVisible(false);
+            }} >
+              <Text>Cancelar</Text>
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

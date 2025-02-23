@@ -18,6 +18,7 @@ import { SheetsContext } from "~/contexts/context";
 import { Button } from "./ui/button";
 import WorkoutPlanForm from "./forms/WorkoutPlanForm";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+import { showMessage } from "react-native-flash-message";
 
 interface Props {
   plans: WorkoutPlan[];
@@ -54,7 +55,13 @@ export default function WorkoutPlanList({
 
   const moveUp = (index: number) => {
     if (index <= 0) {
-      Alert.alert('Aviso', 'O plano já está na primeira posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'O plano já está na primeira posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
 
@@ -65,7 +72,13 @@ export default function WorkoutPlanList({
 
   const moveDown = (index: number) => {
     if (index >= plans.length - 1) {
-      Alert.alert('Aviso', 'O plano já está na última posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'O plano já está na última posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
 

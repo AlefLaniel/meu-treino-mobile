@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { showMessage } from "react-native-flash-message";
 
 interface Props {
   sheets: WorkoutSheet[];
@@ -49,7 +50,13 @@ export default function WorkoutSheetList({
 
   const moveUp = (index: number) => {
     if (index <= 0) {
-      Alert.alert('Aviso', 'A ficha já está na primeira posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'A ficha já está na primeira posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
     const newSheets = [...sheets];
@@ -59,7 +66,13 @@ export default function WorkoutSheetList({
 
   const moveDown = (index: number) => {
     if (index >= sheets.length - 1) {
-      Alert.alert('Aviso', 'A ficha já está na última posição.');
+      showMessage({
+        message: 'Aviso',
+        description: 'A ficha já está na última posição.',
+        type: 'info',
+        icon: 'info',
+        duration: 3000,
+      })
       return;
     }
     const newSheets = [...sheets];
