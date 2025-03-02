@@ -1,6 +1,12 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useContext } from "react";
-import { Alert, SafeAreaView, ScrollView, useColorScheme, View } from "react-native";
+import React, { useContext, useState } from "react";
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  useColorScheme,
+  View,
+} from "react-native";
 import ExerciseList from "~/components/ExerciseList";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -13,15 +19,20 @@ import FlashMessage, { showMessage } from "react-native-flash-message";
 import backupData from "~/utils/backupData";
 import restoreData from "~/utils/restoreData";
 import { generateHTML } from "~/utils/pdf";
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
-import * as Updates from 'expo-updates';
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
+import * as Updates from "expo-updates";
+import { Modal } from "react-native";
 
 // import { Container } from './styles';
 
 const Home = () => {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
+  const [isRestModalVisible, setIsRestModalVisible] = useState(false);
+  const [restTime, setRestTime] = useState(60);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
 
   const {
     resetCompleted,
@@ -44,6 +55,29 @@ const Home = () => {
     handleDeleteSheet,
   } = useContext(SheetsContext) as SheetsContextType;
 
+  const startRestTimer = () => {
+    setIsRestModalVisible(true);
+    setRestTime(60);
+    const interval = setInterval(() => {
+      setRestTime((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(interval);
+          setIsRestModalVisible(false);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+    setTimer(interval);
+  };
+
+  const handleToggleCompletion = (id: string, completed: boolean) => {
+    handleToggleExerciseCompletion(id);
+    if (!completed) {
+      startRestTimer();
+    }
+  };
+
   const handleGeneratePDF = async () => {
     try {
       const htmlContent = generateHTML(sheets);
@@ -54,8 +88,8 @@ const Home = () => {
         type: "success",
         duration: 3000,
         icon: "success",
-      })
-      
+      });
+
       // Se desejar, você pode compartilhar o PDF:
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri);
@@ -67,22 +101,22 @@ const Home = () => {
         type: "danger",
         duration: 3000,
         icon: "danger",
-      })
+      });
       console.error(error);
     }
   };
 
   const restaurarBackup = async () => {
     await restoreData();
-   setTimeout(async () => {
-    await Updates.reloadAsync(); // Recarrega a aplicação
-   }, 3000);
-   showMessage({
-     message: "Backup restaurado com sucesso!",
+    setTimeout(async () => {
+      await Updates.reloadAsync(); // Recarrega a aplicação
+    }, 3000);
+    showMessage({
+      message: "Backup restaurado com sucesso!",
       type: "success",
       duration: 3000,
       icon: "success",
-    })
+    });
   };
 
   const handleReorder = (newSheets: WorkoutSheet[]) => {
@@ -98,16 +132,17 @@ const Home = () => {
       return sheet;
     });
     setSheets(newSheets);
-  }
-  
+  };
+
   const handleReorderExercises = (newExercises: Exercise[]) => {
     if (!selectedPlan) return;
-    const newPlans = selectedSheet?.plans.map((plan) => {
-      if (plan.id === selectedPlan.id) {
-        return { ...plan, exercises: newExercises };
-      }
-      return plan;
-    }) || [];
+    const newPlans =
+      selectedSheet?.plans.map((plan) => {
+        if (plan.id === selectedPlan.id) {
+          return { ...plan, exercises: newExercises };
+        }
+        return plan;
+      }) || [];
     const newSheets = sheets.map((sheet) => {
       if (sheet.id === selectedSheet?.id) {
         return { ...sheet, plans: newPlans };
@@ -117,72 +152,86 @@ const Home = () => {
     setSheets(newSheets);
   };
 
+  const handleNextExercise = () => {
+    if (selectedPlan && selectedPlan.exercises.length > 0) {
+      const currentExercise = selectedPlan.exercises[currentExerciseIndex];
+      handleToggleCompletion(currentExercise.id, false);
+      setCurrentExerciseIndex(
+        (prevIndex) => (prevIndex + 1) % selectedPlan.exercises.length
+      );
+    }
+  };
+
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
-        <FlashMessage position="top" />
-        <View className="flex flex-row items-center justify-between px-4 py-2 bg-gray-200 dark:bg-gray-900">
-          <Button
+      <FlashMessage position="top" />
+      <View className="flex flex-row items-center justify-between px-4 py-2 bg-gray-200 dark:bg-gray-900">
+        <Button
           onPress={() => backupData()}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          ><Text>Fazer Backup</Text></Button>
-          <Button
+        >
+          <Text>Fazer Backup</Text>
+        </Button>
+        <Button
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onPress={handleGeneratePDF}>
-            <Text>Gerar PDF</Text>
-          </Button>
-          <Button 
+          onPress={handleGeneratePDF}
+        >
+          <Text>Gerar PDF</Text>
+        </Button>
+        <Button
           onPress={() => restaurarBackup()}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          ><Text>Restuarar Backup</Text></Button>
-        </View>
-        <View className="px-4 py-8 flex-1">
-          {!selectedSheet ? (
-            <WorkoutSheetList
-              sheets={sheets}
-              onSelect={setSelectedSheet}
-              onAdd={() => setIsSheetModalOpen(true)}
-              onEdit={(sheet) => {
-                setEditingSheet(sheet);
-                setIsSheetModalOpen(true);
-              }}
-              onDelete={handleDeleteSheet}
-              onReorder={handleReorder}
-            />
-          ) : !selectedPlan ? (
-            <View className="space-y-6">
-              <View className="flex flex-row items-center gap-2">
-                <Button
-                  variant="link"
-                  size="icon"
-                  onPress={() => setSelectedSheet(null)}
-                  className="action-button flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900"
-                >
-                  <MaterialIcons
-                    name="arrow-back"
-                    size={28}
-                    color={isDarkMode ? "#FFFFFF" : "#151618FF"}
-                  />
-                </Button>
-                <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {selectedSheet.name}
-                </Text>
-              </View>
-              <WorkoutPlanList
-                plans={selectedSheet.plans}
-                onSelect={setSelectedPlan}
-                onAdd={() => setIsPlanModalOpen(true)}
-                onEdit={(plan) => {
-                  setEditingPlan(plan);
-                  setIsPlanModalOpen(true);
-                }}
-                onDelete={handleDeletePlan}
-                resetDone={resetDone}
-                onReorder={handleReorderPlans}
-              />
+        >
+          <Text>Restuarar Backup</Text>
+        </Button>
+      </View>
+      <View className="px-4 py-8 flex-1">
+        {!selectedSheet ? (
+          <WorkoutSheetList
+            sheets={sheets}
+            onSelect={setSelectedSheet}
+            onAdd={() => setIsSheetModalOpen(true)}
+            onEdit={(sheet) => {
+              setEditingSheet(sheet);
+              setIsSheetModalOpen(true);
+            }}
+            onDelete={handleDeleteSheet}
+            onReorder={handleReorder}
+          />
+        ) : !selectedPlan ? (
+          <View className="space-y-6">
+            <View className="flex flex-row items-center gap-2">
+              <Button
+                variant="link"
+                size="icon"
+                onPress={() => setSelectedSheet(null)}
+                className="action-button flex flex-row items-center gap-2 text-gray-600 hover:text-gray-900"
+              >
+                <MaterialIcons
+                  name="arrow-back"
+                  size={28}
+                  color={isDarkMode ? "#FFFFFF" : "#151618FF"}
+                />
+              </Button>
+              <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+                {selectedSheet.name}
+              </Text>
             </View>
-          ) : 
-          selectedPlan?.exercises ? (
-            <View className="space-y-6 mb-72">
+            <WorkoutPlanList
+              plans={selectedSheet.plans}
+              onSelect={setSelectedPlan}
+              onAdd={() => setIsPlanModalOpen(true)}
+              onEdit={(plan) => {
+                setEditingPlan(plan);
+                setIsPlanModalOpen(true);
+              }}
+              onDelete={handleDeletePlan}
+              resetDone={resetDone}
+              onReorder={handleReorderPlans}
+            />
+          </View>
+        ) : selectedPlan?.exercises ? (
+          <View className="space-y-6 mb-72">
             <View className="flex flex-row items-center gap-2">
               <Button
                 variant="link"
@@ -210,8 +259,16 @@ const Home = () => {
               onDelete={handleDeleteExercise}
               onToggleCompletion={handleToggleExerciseCompletion}
               onReorder={handleReorderExercises}
+              handleToggleCompletion={handleToggleCompletion}
             />
-            <View className="flex justify-between">
+            <View className="flex flex-row justify-between">
+              {/* Botão de próximo exercício */}
+              <Button
+                onPress={handleNextExercise}
+                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <Text className="dark:text-white">Próximo Exercício</Text>
+              </Button>
               {/* Botão de reset */}
               <Button
                 onPress={resetCompleted}
@@ -221,9 +278,44 @@ const Home = () => {
               </Button>
             </View>
           </View>
-          )
-          : null}
+        ) : null}
+      </View>
+      <Modal
+        visible={isRestModalVisible}
+        transparent={true}
+        animationType="slide"
+        className="flex-1 justify-center items-center bg-black/80"
+      >
+        <View className="flex-1 justify-center items-center bg-black/80">
+          <View className="bg-white p-6 rounded-lg w-[50%]">
+            <Text className="text-xl font-bold mb-4">Tempo de Descanso</Text>
+            <Text className="text-2xl font-bold mb-4">{restTime} segundos</Text>
+            <View className="flex-row justify-between">
+              <Button
+                className="bg-red-500"
+                onPress={() => setRestTime((prev) => Math.max(prev - 5, 0))}
+              >
+                <Text>-5s</Text>
+              </Button>
+              <Button
+                className="bg-green-500"
+                onPress={() => setRestTime((prev) => prev + 5)}
+              >
+                <Text>+5s</Text>
+              </Button>
+            </View>
+            <Button
+              className="bg-gray-200 mt-4"
+              onPress={() => {
+                if (timer) clearInterval(timer);
+                setIsRestModalVisible(false);
+              }}
+            >
+              <Text>Cancelar</Text>
+            </Button>
+          </View>
         </View>
+      </Modal>
     </SafeAreaView>
   );
 };
