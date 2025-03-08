@@ -57,7 +57,7 @@ const Home = () => {
 
   const startRestTimer = () => {
     setIsRestModalVisible(true);
-    setRestTime(60);
+    setRestTime(120);
     const interval = setInterval(() => {
       setRestTime((prevTime) => {
         if (prevTime <= 1) {
