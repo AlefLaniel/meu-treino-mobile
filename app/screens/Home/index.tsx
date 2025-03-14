@@ -1,5 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -71,10 +71,20 @@ const Home = () => {
     setTimer(interval);
   };
 
+  const stopRestTimer = () => {
+    if (timer) {
+      clearInterval(timer);
+      setTimer(null);
+    }
+    setIsRestModalVisible(false);
+  };
+
   const handleToggleCompletion = (id: string, completed: boolean) => {
     handleToggleExerciseCompletion(id);
-    if (!completed) {
+    if (!completed && !areAllExercisesCompleted()) {
       startRestTimer();
+    } else if (areAllExercisesCompleted()) {
+      stopRestTimer();
     }
   };
 
@@ -152,15 +162,48 @@ const Home = () => {
     setSheets(newSheets);
   };
 
+
   const handleNextExercise = () => {
     if (selectedPlan && selectedPlan.exercises.length > 0) {
       const currentExercise = selectedPlan.exercises[currentExerciseIndex];
       handleToggleCompletion(currentExercise.id, false);
-      setCurrentExerciseIndex(
-        (prevIndex) => (prevIndex + 1) % selectedPlan.exercises.length
-      );
+      const nextIndex = currentExerciseIndex + 1;
+  
+      if (nextIndex >= selectedPlan.exercises.length) {
+        showMessage({
+          message: "Parabéns!",
+          description: "Você concluiu todos os exercícios!",
+          type: "success",
+          duration: 3000,
+          icon: "success",  
+        });
+        stopRestTimer();
+      } else {
+        setCurrentExerciseIndex(nextIndex);
+        startRestTimer();
+      }
+
+      // setTimeout(() => {
+      //   stopRestTimer();
+      // }, 300);
     }
   };
+
+  const areAllExercisesCompleted = () => {
+    return selectedPlan?.exercises.every((exercise) => exercise.completed);
+  };
+
+  useEffect(() => {
+    if (areAllExercisesCompleted()) {
+      showMessage({
+        message: "Parabéns!",
+        description: "Você concluiu todos os exercícios!",
+        type: "success",
+        duration: 3000,
+        icon: "success",})
+      stopRestTimer();
+    }
+  }, [selectedPlan?.exercises]);
 
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
@@ -170,19 +213,19 @@ const Home = () => {
           onPress={() => backupData()}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          <Text>Fazer Backup</Text>
+          <Text className="dark:text-white">Fazer Backup</Text>
         </Button>
         <Button
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           onPress={handleGeneratePDF}
         >
-          <Text>Gerar PDF</Text>
+          <Text className="dark:text-white">Gerar PDF</Text>
         </Button>
         <Button
           onPress={() => restaurarBackup()}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          <Text>Restuarar Backup</Text>
+          <Text className="dark:text-white">Restuarar Backup</Text>
         </Button>
       </View>
       <View className="px-4 py-8 flex-1">
@@ -261,21 +304,26 @@ const Home = () => {
               onReorder={handleReorderExercises}
               handleToggleCompletion={handleToggleCompletion}
             />
-            <View className="flex flex-row justify-between">
-              {/* Botão de próximo exercício */}
-              <Button
-                onPress={handleNextExercise}
-                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                <Text className="dark:text-white">Próximo Exercício</Text>
-              </Button>
+            <View className="flex justify-between">
               {/* Botão de reset */}
-              <Button
-                onPress={resetCompleted}
-                className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                <Text className="dark:text-white">Finalizar Exercícios</Text>
-              </Button>
+              {areAllExercisesCompleted() ? (
+                <Button
+                  onPress={resetCompleted}
+                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  <Text className="dark:text-white">Finalizar Exercícios</Text>
+                </Button>
+              ) : (
+                <>
+                  {/* Botão de próximo exercício */}
+                  <Button
+                    onPress={handleNextExercise}
+                    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    <Text className="dark:text-white">Próximo Exercício</Text>
+                  </Button>
+                </>
+              )}
             </View>
           </View>
         ) : null}
@@ -288,8 +336,8 @@ const Home = () => {
       >
         <View className="flex-1 justify-center items-center bg-black/80">
           <View className="bg-white p-6 rounded-lg w-[50%]">
-            <Text className="text-xl font-bold mb-4">Tempo de Descanso</Text>
-            <Text className="text-2xl font-bold mb-4">{restTime} segundos</Text>
+            <Text className="text-xl font-bold mb-4 dark:text-blue-950">Tempo de Descanso</Text>
+            <Text className="text-2xl font-bold mb-4 dark:text-blue-950">{restTime} segundos</Text>
             <View className="flex-row justify-between">
               <Button
                 className="bg-red-500"
@@ -311,7 +359,7 @@ const Home = () => {
                 setIsRestModalVisible(false);
               }}
             >
-              <Text>Cancelar</Text>
+              <Text className="dark:text-black">Cancelar</Text>
             </Button>
           </View>
         </View>
