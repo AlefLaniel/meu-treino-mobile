@@ -178,6 +178,7 @@ const Home = () => {
           icon: "success",  
         });
         stopRestTimer();
+        setCurrentExerciseIndex(0);
       } else {
         setCurrentExerciseIndex(nextIndex);
         startRestTimer();
