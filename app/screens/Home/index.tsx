@@ -23,6 +23,8 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import * as Updates from "expo-updates";
 import { Modal } from "react-native";
+import CustomText from "~/components/CustomTextQuicksand";
+import CustomTextRoboto from "~/components/CustomTextRoboto";
 
 // import { Container } from './styles';
 
@@ -209,24 +211,24 @@ const Home = () => {
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <FlashMessage position="top" />
-      <View className="flex flex-row items-center justify-between px-4 py-2 bg-gray-200 dark:bg-gray-900">
+      <View className="flex flex-row items-center justify-between p-2 bg-gray-200 dark:bg-gray-900">
         <Button
           onPress={() => backupData()}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          <Text className="dark:text-white">Fazer Backup</Text>
+          <CustomText className="dark:text-white">Fazer Backup</CustomText>
         </Button>
         <Button
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           onPress={handleGeneratePDF}
         >
-          <Text className="dark:text-white">Gerar PDF</Text>
+          <CustomText className="dark:text-white">Gerar PDF</CustomText>
         </Button>
         <Button
           onPress={() => restaurarBackup()}
           className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          <Text className="dark:text-white">Restuarar Backup</Text>
+          <CustomText className="dark:text-white">Restuarar Backup</CustomText>
         </Button>
       </View>
       <View className="px-4 py-8 flex-1">
@@ -257,9 +259,9 @@ const Home = () => {
                   color={isDarkMode ? "#FFFFFF" : "#151618FF"}
                 />
               </Button>
-              <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+              <CustomTextRoboto className="text-2xl font-bold text-gray-900 dark:text-white">
                 {selectedSheet.name}
-              </Text>
+              </CustomTextRoboto>
             </View>
             <WorkoutPlanList
               plans={selectedSheet.plans}
@@ -289,9 +291,9 @@ const Home = () => {
                   color={isDarkMode ? "#FFFFFF" : "#151618FF"}
                 />
               </Button>
-              <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+              <CustomTextRoboto className="text-2xl font-bold text-gray-900 dark:text-white">
                 {selectedPlan?.name}
-              </Text>
+              </CustomTextRoboto>
             </View>
             <ExerciseList
               exercises={selectedPlan?.exercises}
@@ -321,7 +323,7 @@ const Home = () => {
                     onPress={handleNextExercise}
                     className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                   >
-                    <Text className="dark:text-white">Próximo Exercício</Text>
+                    <CustomText className="dark:text-white">Próximo Exercício</CustomText>
                   </Button>
                 </>
               )}
@@ -337,20 +339,20 @@ const Home = () => {
       >
         <View className="flex-1 justify-center items-center bg-black/80">
           <View className="bg-white p-6 rounded-lg w-[50%]">
-            <Text className="text-xl font-bold mb-4 dark:text-blue-950">Tempo de Descanso</Text>
-            <Text className="text-2xl font-bold mb-4 dark:text-blue-950">{restTime} segundos</Text>
+            <CustomText className="text-xl font-bold mb-4 dark:text-blue-950">Tempo de Descanso</CustomText>
+            <CustomTextRoboto className="text-2xl font-bold mb-4 dark:text-blue-950">{restTime} segundos</CustomTextRoboto>
             <View className="flex-row justify-between">
               <Button
                 className="bg-red-500"
                 onPress={() => setRestTime((prev) => Math.max(prev - 5, 0))}
               >
-                <Text>-5s</Text>
+                <CustomText>-5s</CustomText>
               </Button>
               <Button
                 className="bg-green-500"
                 onPress={() => setRestTime((prev) => prev + 5)}
               >
-                <Text>+5s</Text>
+                <CustomText>+5s</CustomText>
               </Button>
             </View>
             <Button
@@ -360,7 +362,7 @@ const Home = () => {
                 setIsRestModalVisible(false);
               }}
             >
-              <Text className="dark:text-black">Cancelar</Text>
+              <CustomText className="dark:text-black text-red-600">Cancelar</CustomText>
             </Button>
           </View>
         </View>

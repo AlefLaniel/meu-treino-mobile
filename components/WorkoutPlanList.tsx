@@ -19,6 +19,8 @@ import { Button } from "./ui/button";
 import WorkoutPlanForm from "./forms/WorkoutPlanForm";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { showMessage } from "react-native-flash-message";
+import CustomTextRoboto from "./CustomTextRoboto";
+import CustomText from "./CustomTextQuicksand";
 
 interface Props {
   plans: WorkoutPlan[];
@@ -90,15 +92,15 @@ export default function WorkoutPlanList({
   const HeaderList = () => {
     return (
       <View className="flex justify-between mb-4">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+        <CustomTextRoboto className="text-2xl text-gray-900 dark:text-white mb-3">
           Planos de Treino
-        </Text>
+        </CustomTextRoboto>
         <View className="flex flex-row justify-between">
         <Dialog open={isPlanModalOpen} onOpenChange={setIsPlanModalOpen}>
           <DialogTrigger asChild>
             <Button className="flex flex-row bg-indigo-600">
               <MaterialIcons name="add" size={20} color="#fff" />
-              <Text className="text-white">Novo Plano</Text>
+              <CustomText className="text-white">Novo Plano</CustomText>
             </Button>
           </DialogTrigger>
           <DialogContent className="dark:bg-gray-800">
@@ -125,7 +127,7 @@ export default function WorkoutPlanList({
           onPress={resetDone}
           className="flex-row items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
         >
-          <Text className="text-white">Resetar</Text>
+          <CustomText className="text-white">Resetar</CustomText>
         </TouchableOpacity>
         </View>
       </View>
@@ -149,9 +151,9 @@ export default function WorkoutPlanList({
                   onCheckedChange={() => onSelect(plan)}
                   disabled={true}
                 />
-                <Text className="text-lg font-semibold text-gray-800 dark:text-white w-44">
+                <CustomTextRoboto className="text-lg font-semibold text-gray-800 dark:text-white w-44">
                   {plan.name}
-                </Text>
+                </CustomTextRoboto>
               </View>
               <View className="flex-row gap-2">
                 <TouchableOpacity
@@ -181,16 +183,16 @@ export default function WorkoutPlanList({
               </View>
             </CardHeader>
             <CardContent>
-            <Text className="text-sm text-gray-600 mb-4">
+            <CustomText className="text-sm text-gray-600 mb-4">
               {plan.exercises.length} exercícios
-            </Text>
+            </CustomText>
             </CardContent>
             <CardFooter>
             <TouchableOpacity
               onPress={() => onSelect(plan)}
               className="w-full px-4 py-2 text-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-50"
             >
-              <Text className="text-indigo-600">Ver Exercícios</Text>
+              <CustomText className="text-indigo-600">Ver Exercícios</CustomText>
             </TouchableOpacity>
             </CardFooter>
           </Card>
@@ -200,7 +202,7 @@ export default function WorkoutPlanList({
         )}
         ListEmptyComponent={() => (
           <View className="text-center py-6 text-gray-500">
-            <Text className="dark:text-white">Nenhum plano de treino cadastrado nesta ficha.</Text>
+            <CustomText className="dark:text-white">Nenhum plano de treino cadastrado nesta ficha.</CustomText>
           </View>
         )}
         className="mb-36"

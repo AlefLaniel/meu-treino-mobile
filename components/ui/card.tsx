@@ -25,7 +25,7 @@ const CardTitle = React.forwardRef<TextRef, React.ComponentPropsWithoutRef<typeo
   ({ className, ...props }, ref) => (
     <Text
       role='heading'
-      aria-level={3}
+      aria-level={4}
       ref={ref}
       className={cn(
         'text-2xl text-card-foreground font-semibold leading-none tracking-tight w-48',

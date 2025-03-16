@@ -12,6 +12,8 @@ import { Button } from "./ui/button";
 import ExerciseForm from "./forms/ExerciseForm";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { showMessage } from "react-native-flash-message";
+import CustomTextRoboto from "./CustomTextRoboto";
+import CustomText from "./CustomTextQuicksand";
 
 interface Props {
   exercises: Exercise[];
@@ -87,29 +89,29 @@ export default function ExerciseList({
               checked={item.completed || false}
               onCheckedChange={() => handleToggleCompletion(item.id, item.completed || false)}
             />
-            <Text
+            <CustomTextRoboto
               className={`ml-2 text-lg font-semibold w-32 ${
                 item.completed ? "text-gray-400 line-through" : "text-gray-800 dark:text-white"
               }`}
             >
               {item.name}
-            </Text>
+            </CustomTextRoboto>
           </TouchableOpacity>
 
           <View className="grid grid-cols-3 gap-2">
-            <Text className="text-sm text-gray-600">
-              <Text className="font-medium">Séries:</Text> {item.sets}
-            </Text>
-            <Text className="text-sm text-gray-600">
-              <Text className="font-medium">Repetições:</Text> {item.reps}
-            </Text>
-            <Text className="text-sm text-gray-600">
-              <Text className="font-medium">Peso:</Text> {item.weight}kg
-            </Text>
+            <CustomText className="text-sm text-gray-600">
+              <CustomText className="font-medium">Séries:</CustomText> {item.sets}
+            </CustomText>
+            <CustomText className="text-sm text-gray-600">
+              <CustomText className="font-medium">Repetições:</CustomText> {item.reps}
+            </CustomText>
+            <CustomText className="text-sm text-gray-600">
+              <CustomText className="font-medium">Peso:</CustomText> {item.weight}kg
+            </CustomText>
           </View>
 
           {item.notes && (
-            <Text className="mt-2 text-sm text-gray-500">{item.notes}</Text>
+            <CustomText className="mt-2 text-sm text-gray-500">{item.notes}</CustomText>
           )}
         </View>
         <View className="flex-row gap-2">
@@ -136,9 +138,9 @@ export default function ExerciseList({
             }}
             className="p-2 rounded-full bg-gray-200"
           >
-            <Text>
+            <CustomText>
               <MaterialIcons name="delete" size={20} color="#EF4444" />
-            </Text>
+            </CustomText>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => moveUp(index)}
@@ -171,7 +173,7 @@ export default function ExerciseList({
 
     return (
       <View className="flex justify-between mb-4">
-      <Text className="text-xl font-bold text-gray-900 dark:text-white mb-3">Exercícios</Text>
+      <CustomTextRoboto className="text-2xl text-gray-900 dark:text-white mb-3">Exercícios</CustomTextRoboto>
       <Dialog
         open={isExerciseModalOpen}
         onOpenChange={setIsExerciseModalOpen}
@@ -179,7 +181,7 @@ export default function ExerciseList({
         <DialogTrigger asChild>
           <Button className="flex flex-row gap-2 bg-indigo-600 rounded-lg">
           <Plus size={20} color="white" />
-          <Text className="text-white font-medium">Novo Exercício</Text>
+          <CustomText className="text-white font-medium">Novo Exercício</CustomText>
           </Button>
         </DialogTrigger>
         <DialogContent className="h-auto w-96 dark:bg-gray-800">
@@ -217,9 +219,9 @@ export default function ExerciseList({
           ListHeaderComponent={() => <HeaderList />}
           ListEmptyComponent={() => (
             <View className="py-6">
-              <Text className="text-center text-gray-500 dark:text-white">
+              <CustomText className="text-center text-gray-500 dark:text-white">
                 Nenhum exercício cadastrado neste plano.
-              </Text>
+              </CustomText>
             </View>
           )}
         />
