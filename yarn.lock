@@ -823,6 +823,16 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@expo-google-fonts/quicksand@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/quicksand/-/quicksand-0.2.3.tgz#4838a1b380eefaa8478e63e6f113bd1b495c29d7"
+  integrity sha512-cQhYsOYPBbKzqry0TT87fJz8ZlCKLLeHiECsjI9zRx4pMB3XKnHSWNO7JBDvMA6w9ekcQ17aaBZ4vj9RC2Kgtw==
+
+"@expo-google-fonts/roboto@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/roboto/-/roboto-0.2.3.tgz#c103422a3c8f461aaada33acaf06418f6650dc19"
+  integrity sha512-PF6S//ZYWeXfpYTwvY2oEe0d5RnqwR5KMsGjuTgg6y9p/CPK/IkWL+wsbkzjfd+Jck1Q1pRlWOoe5uz42sQFRg==
+
 "@expo/bunyan@^4.0.0":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@expo/bunyan/-/bunyan-4.0.1.tgz#ab9e17e36c71c704a0ce72168378a487368da736"
