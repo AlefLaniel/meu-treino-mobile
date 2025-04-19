@@ -1,5 +1,8 @@
 import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
+import { View, Text, TouchableOpacity, FlatList, Alert, useColorScheme } from "react-native";
 import { WorkoutSheet } from "../types/workout";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -39,7 +42,7 @@ export default function WorkoutSheetList({
   onAdd,
   onEdit,
   onDelete,
-  onReorder
+  onReorder,
 }: Props) {
   const {
     isSheetModalOpen,
@@ -50,47 +53,20 @@ export default function WorkoutSheetList({
     handleAddSheet,
   } = useContext(SheetsContext) as SheetsContextType;
 
-  const moveUp = (index: number) => {
-    if (index <= 0) {
-      showMessage({
-        message: 'Aviso',
-        description: 'A ficha já está na primeira posição.',
-        type: 'info',
-        icon: 'info',
-        duration: 3000,
-      })
-      return;
-    }
-    const newSheets = [...sheets];
-    [newSheets[index - 1], newSheets[index]] = [newSheets[index], newSheets[index - 1]];
-    onReorder(newSheets);
-  };
-
-  const moveDown = (index: number) => {
-    if (index >= sheets.length - 1) {
-      showMessage({
-        message: 'Aviso',
-        description: 'A ficha já está na última posição.',
-        type: 'info',
-        icon: 'info',
-        duration: 3000,
-      })
-      return;
-    }
-    const newSheets = [...sheets];
-    [newSheets[index + 1], newSheets[index]] = [newSheets[index], newSheets[index + 1]];
-    onReorder(newSheets);
-  };
-
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
 
   const HeaderList = () => {
-
     return (
       <View className="flex justify-between mb-4">
         <CustomTextRoboto className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
           Fichas de Treino
         </CustomTextRoboto>
-        <Dialog open={isSheetModalOpen} onOpenChange={setIsSheetModalOpen} className="dark:bg-gray-800">
+        <Dialog
+          open={isSheetModalOpen}
+          onOpenChange={setIsSheetModalOpen}
+          className="dark:bg-gray-800"
+        >
           <DialogTrigger asChild>
             <Button className="flex flex-row bg-indigo-600">
               <MaterialIcons name="add" size={20} color="#fff" />
@@ -111,10 +87,7 @@ export default function WorkoutSheetList({
                   ? (data) => handleEditSheet({ ...editingSheet, ...data })
                   : (data) =>
                       handleAddSheet(
-                        data as Omit<
-                          WorkoutSheet,
-                          "id" | "plans" | "createdAt"
-                        >
+                        data as Omit<WorkoutSheet, "id" | "plans" | "createdAt">
                       )
               }
               onCancel={() => {
@@ -125,69 +98,98 @@ export default function WorkoutSheetList({
           </DialogContent>
         </Dialog>
       </View>
-    )
-  }
+    );
+  };
+
+  const renderItem = ({
+    item,
+    drag,
+    isActive,
+  }: RenderItemParams<WorkoutSheet>) => (
+    <Card
+      key={item.id}
+      className={`mb-4 dark:border dark:border-gray-200 ${isActive ? "bg-gray-300" : isDarkMode ? "bg-gray-800" : "bg-white"}`}
+      style={{
+        opacity: isActive ? 0.8 : 1,
+      }}
+    >
+      <CardHeader className="flex-row justify-between items-start">
+        <CustomTextRoboto
+          className={`font-bold text-xl ${
+            isDarkMode ? "text-white" : "text-gray-900"
+          }`}
+        >
+          {item.name}
+        </CustomTextRoboto>
+        <View className="flex-row gap-2 -mt-3">
+          <TouchableOpacity
+            onPress={() => onEdit(item)}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          >
+            <MaterialIcons name="edit" size={20} color="#3ad625" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onDelete(item.id)}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          >
+            <MaterialIcons name="delete" size={20} color="#EF4444" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onLongPress={drag} // Inicia o drag and drop ao pressionar
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+          >
+            <MaterialIcons name="drag-handle" size={20} color={isDarkMode ? "#fff": "#464A45FF"} />
+          </TouchableOpacity>
+        </View>
+      </CardHeader>
+      <CardContent>
+        <CustomText
+          className={`mb-4 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}
+        >
+          {item.description}
+        </CustomText>
+        <CustomText
+          className={`text-sm mb-4 ${
+            isDarkMode ? "text-gray-400" : "text-gray-600"
+          }`}
+        >
+          {item.plans.length} planos de treino
+        </CustomText>
+        <CustomText
+          className={`text-sm self-end mb-4 ${
+            isDarkMode ? "text-gray-500" : "text-gray-500"
+          }`}
+        >
+          {new Date(item.createdAt).toLocaleDateString()}
+        </CustomText>
+      </CardContent>
+      <CardFooter>
+        <TouchableOpacity
+          onPress={() => onSelect(item)}
+          className={`w-full px-4 py-2 border rounded-lg hover:bg-indigo-50 ${
+            isDarkMode
+              ? "text-indigo-400 border-indigo-400"
+              : "text-indigo-600 border-indigo-600"
+          }`}
+        >
+          <CustomText
+            className={isDarkMode ? "text-indigo-400" : "text-indigo-600"}
+          >
+            Ver Detalhes
+          </CustomText>
+        </TouchableOpacity>
+      </CardFooter>
+    </Card>
+  );
 
   return (
     <View className="space-y-4">
-      <FlatList
+      <DraggableFlatList
         data={sheets}
-        style={{ marginBottom: 50 }}
+        renderItem={renderItem}
+        ListHeaderComponent={ <HeaderList /> }
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => <HeaderList />}
-        renderItem={({ item: sheet }) => (
-          <Card key={sheet.id} className="mb-4">
-            <CardHeader className="flex-row justify-between items-start">
-              <CustomTextRoboto className="font-bold text-xl">{sheet.name}</CustomTextRoboto>
-              <View className="flex-row gap-2 -mt-3">
-                <TouchableOpacity
-                  onPress={() => onEdit(sheet)}
-                  className="p-2 rounded-full bg-gray-200"
-                >
-                  <MaterialIcons name="edit" size={20} color="#3ad625" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => onDelete(sheet.id)}
-                  className="p-2 rounded-full bg-gray-200"
-                >
-                  <MaterialIcons name="delete" size={20} color="#EF4444" />
-                </TouchableOpacity>
-                <TouchableOpacity  className="p-2 rounded-full bg-gray-200">
-                  <MaterialIcons name="arrow-upward" size={20} color="#464A45FF" onPress={() => moveUp(sheets.indexOf(sheet))} />
-                </TouchableOpacity>
-                <TouchableOpacity  className="p-2 rounded-full bg-gray-200">
-                  <MaterialIcons name="arrow-downward" size={20} color="#464A45FF" onPress={() => moveDown(sheets.indexOf(sheet))} />
-                </TouchableOpacity>
-              </View>
-            </CardHeader>
-            <CardContent className="flex">
-              <CustomText className="text-gray-600 mb-4">{sheet.description}</CustomText>
-
-              <CustomText className="text-sm text-gray-600 mb-4">
-                {sheet.plans.length} planos de treino
-              </CustomText>
-              <CustomText className="text-sm text-gray-500 self-end mb-4">
-                {new Date(sheet.createdAt).toLocaleDateString()}
-              </CustomText>
-            </CardContent>
-            <CardFooter>
-              <TouchableOpacity
-                onPress={() => onSelect(sheet)}
-                className="w-full px-4 py-2 text-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-50"
-              >
-                <CustomText className="text-indigo-600">Ver Detalhes</CustomText>
-              </TouchableOpacity>
-            </CardFooter>
-          </Card>
-        )}
-        ListEmptyComponent={() => (
-          <View className="text-center py-8 text-gray-500">
-            <CustomText className="dark:text-white">
-              Nenhuma ficha de treino cadastrada. Crie uma nova ficha para
-              começar!
-            </CustomText>
-          </View>
-        )}
+        onDragEnd={({ data }) => onReorder(data)} // Atualiza a ordem ao soltar
       />
     </View>
   );

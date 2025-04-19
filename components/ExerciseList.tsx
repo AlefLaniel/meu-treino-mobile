@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Alert, Modal } from "react-native";
+import { View, TouchableOpacity, FlatList, Alert, Modal, useColorScheme } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Exercise } from "../types/workout";
 import { Checkbox } from "./ui/checkbox";
-
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SheetsContext } from "~/contexts/context";
 import { SheetsContextType } from "~/contexts/types";
@@ -11,7 +13,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "./ui/button";
 import ExerciseForm from "./forms/ExerciseForm";
 import { Card, CardContent, CardHeader } from "./ui/card";
-import { showMessage } from "react-native-flash-message";
 import CustomTextRoboto from "./CustomTextRoboto";
 import CustomText from "./CustomTextQuicksand";
 
@@ -41,48 +42,21 @@ export default function ExerciseList({
     setNewExercises(exercises);
   }, [exercises]);
 
-  const moveUp = (index: number) => {
-    if (index <= 0) {
-      showMessage({
-        message: 'Aviso',
-        description: 'O exercício já está na primeira posição.',
-        type: 'info',
-        icon: 'info',
-        duration: 3000,
-      })
-      return;
-    }
+     const colorScheme = useColorScheme();
+      const isDarkMode = colorScheme === "dark";
+  
 
-    const updatedExercises = [...newExercises];
-    [updatedExercises[index], updatedExercises[index - 1]] = [updatedExercises[index - 1], updatedExercises[index]];
-    setNewExercises(updatedExercises);
-    onReorder(updatedExercises);
-  };
-
-  const moveDown = (index: number) => {
-    if (index >= newExercises.length - 1) {
-      showMessage({
-        message: 'Aviso',
-        description: 'O exercício já está na última posição.',
-        type: 'info',
-        icon: 'info',
-        duration: 3000,
-      })
-      return;
-    }
-
-    const updatedExercises = [...newExercises];
-    [updatedExercises[index], updatedExercises[index + 1]] = [updatedExercises[index + 1], updatedExercises[index]];
-    setNewExercises(updatedExercises);
-    onReorder(updatedExercises);
-  };
-
-  const renderExercise = ({ item, index }: { item: Exercise, index: number }) => (
-    <Card className="py-4 mb-4">
+  const renderExercise = ({ item, drag, isActive }: RenderItemParams<Exercise>) => (
+    <Card
+      className={`py-4 mb-4 dark:border-gray-200 ${isActive ? "bg-gray-300" : "bg-white dark:bg-gray-800"}`}
+      style={{
+        opacity: isActive ? 0.8 : 1,
+      }}
+    >
       <CardContent className="flex-row justify-between items-start">
-      <View className="flex-1">
+        <View className="flex-1">
           <TouchableOpacity
-             onPress={() => handleToggleCompletion(item.id, item.completed || false)}
+            onPress={() => handleToggleCompletion(item.id, item.completed || false)}
             className="flex-row items-center mb-2"
           >
             <Checkbox
@@ -117,7 +91,7 @@ export default function ExerciseList({
         <View className="flex-row gap-2">
           <TouchableOpacity
             onPress={() => onEdit(item)}
-            className="p-2 rounded-full bg-gray-200"
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
           >
             <MaterialIcons name="edit" size={20} color="#3ad625" />
           </TouchableOpacity>
@@ -136,26 +110,17 @@ export default function ExerciseList({
                 ]
               );
             }}
-            className="p-2 rounded-full bg-gray-200"
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
           >
-            <CustomText>
-              <MaterialIcons name="delete" size={20} color="#EF4444" />
-            </CustomText>
+            <MaterialIcons name="delete" size={20} color="#EF4444" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => moveUp(index)}
-            className="p-2 rounded-full bg-gray-200"
+            onLongPress={drag} // Inicia o drag and drop ao pressionar
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
           >
-            <MaterialIcons name="arrow-upward" size={20} color="#464A45FF" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => moveDown(index)}
-            className="p-2 rounded-full bg-gray-200"
-          >
-            <MaterialIcons name="arrow-downward" size={20} color="#464A45FF" />
+            <MaterialIcons name="drag-handle" size={20} color={isDarkMode ? "#fff" : "#464A45FF"} />
           </TouchableOpacity>
         </View>
-
       </CardContent>
     </Card>
   );
@@ -204,28 +169,24 @@ export default function ExerciseList({
 
   return (
     <View className="p-4">
-     {exercises.length === 0 && (
-      <HeaderList />
-     )}
-
-      {exercises.length > 0 && (
-        <FlatList
-          className="space-y-4"
-          data={newExercises}
-          keyExtractor={(item) => item.id}
-          renderItem={renderExercise}
-          keyboardShouldPersistTaps="handled" 
-          contentContainerStyle={{ paddingBottom: 10 }}
-          ListHeaderComponent={() => <HeaderList />}
-          ListEmptyComponent={() => (
-            <View className="py-6">
-              <CustomText className="text-center text-gray-500 dark:text-white">
-                Nenhum exercício cadastrado neste plano.
-              </CustomText>
-            </View>
-          )}
-        />
-      )}
+<DraggableFlatList
+        className="space-y-4"
+        data={newExercises}
+        renderItem={renderExercise}
+        keyExtractor={(item) => item.id}
+        onDragEnd={({ data }) => {
+          setNewExercises(data);
+          onReorder(data); // Atualiza a ordem ao soltar
+        }}
+        ListHeaderComponent={() => <HeaderList />}
+        ListEmptyComponent={() => (
+          <View className="py-6">
+            <CustomText className="text-center text-gray-500 dark:text-white">
+              Nenhum exercício cadastrado neste plano.
+            </CustomText>
+          </View>
+        )}
+      />
 
 
     </View>

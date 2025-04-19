@@ -1,9 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import React, { useContext, useEffect, useState } from "react";
 import {
-  Alert,
   SafeAreaView,
-  ScrollView,
   useColorScheme,
   View,
 } from "react-native";
@@ -137,13 +135,20 @@ const Home = () => {
 
   const handleReorderPlans = (newPlans: WorkoutPlan[]) => {
     if (!selectedSheet) return;
-    const newSheets = sheets.map((sheet) => {
-      if (sheet.id === selectedSheet.id) {
-        return { ...sheet, plans: newPlans };
-      }
-      return sheet;
-    });
+  
+    // Atualiza os planos do selectedSheet
+    const updatedSheet = { ...selectedSheet, plans: newPlans };
+  
+    // Atualiza a lista de sheets com o selectedSheet atualizado
+    const newSheets = sheets.map((sheet) =>
+      sheet.id === selectedSheet.id ? updatedSheet : sheet
+    );
+  
+    // Atualiza o estado
     setSheets(newSheets);
+  
+    // Atualiza o selectedSheet para refletir as mudanças
+    setSelectedSheet(updatedSheet);
   };
 
   const handleReorderExercises = (newExercises: Exercise[]) => {
@@ -231,7 +236,7 @@ const Home = () => {
           <CustomText className="dark:text-white">Restuarar Backup</CustomText>
         </Button>
       </View>
-      <View className="px-4 py-8 flex-1">
+      <View className="px-4 py-14 flex-1">
         {!selectedSheet ? (
           <WorkoutSheetList
             sheets={sheets}
@@ -245,7 +250,7 @@ const Home = () => {
             onReorder={handleReorder}
           />
         ) : !selectedPlan ? (
-          <View className="space-y-6">
+          <View className="space-y-6 pb-24">
             <View className="flex flex-row items-center gap-2">
               <Button
                 variant="link"
