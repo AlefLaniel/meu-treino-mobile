@@ -216,27 +216,8 @@ const Home = () => {
   return (
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <FlashMessage position="top" />
-      <View className="flex flex-row items-center justify-between p-2 bg-gray-200 dark:bg-gray-900">
-        <Button
-          onPress={() => backupData()}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          <CustomText className="dark:text-white">Fazer Backup</CustomText>
-        </Button>
-        <Button
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onPress={handleGeneratePDF}
-        >
-          <CustomText className="dark:text-white">Gerar PDF</CustomText>
-        </Button>
-        <Button
-          onPress={() => restaurarBackup()}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-        >
-          <CustomText className="dark:text-white">Restuarar Backup</CustomText>
-        </Button>
-      </View>
-      <View className="px-4 py-14 flex-1">
+     
+      <View className="px-4 py-6 flex-1">
         {!selectedSheet ? (
           <WorkoutSheetList
             sheets={sheets}
@@ -317,7 +298,7 @@ const Home = () => {
               {areAllExercisesCompleted() ? (
                 <Button
                   onPress={resetCompleted}
-                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="-mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   <Text className="dark:text-white">Finalizar Exercícios</Text>
                 </Button>
@@ -326,7 +307,7 @@ const Home = () => {
                   {/* Botão de próximo exercício */}
                   <Button
                     onPress={handleNextExercise}
-                    className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="-mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                   >
                     <CustomText className="dark:text-white">Próximo Exercício</CustomText>
                   </Button>
@@ -372,6 +353,28 @@ const Home = () => {
           </View>
         </View>
       </Modal>
+     {!selectedPlan?.exercises && (
+       <View className="flex flex-row items-center justify-around p-4 mb-40">
+       <Button
+         onPress={() => backupData()}
+         className="px-4 py-2 bg-blue-200 text-white rounded hover:bg-blue-300"
+       >
+        <MaterialIcons name="backup" size={24} color="#1E90FF" />
+       </Button>
+       <Button
+         className="px-4 py-2 bg-red-200 text-white rounded hover:bg-red-400"
+         onPress={handleGeneratePDF}
+       >
+        <MaterialIcons name="picture-as-pdf" size={24} color="#FF4500" />
+       </Button>
+       <Button
+         onPress={() => restaurarBackup()}
+         className="px-4 py-2 bg-green-200 text-white rounded hover:bg-green-400"
+       >
+         <MaterialIcons name="restore" size={24} color="#32CD32" />
+       </Button>
+     </View>
+     )}
     </SafeAreaView>
   );
 };

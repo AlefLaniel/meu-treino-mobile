@@ -183,7 +183,7 @@ export default function WorkoutSheetList({
   );
 
   return (
-    <View className="space-y-4">
+    <View className="space-y-2">
       <DraggableFlatList
         data={sheets}
         renderItem={renderItem}
