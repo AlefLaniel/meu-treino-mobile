@@ -217,7 +217,7 @@ const Home = () => {
     <SafeAreaView className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <FlashMessage position="top" />
      
-      <View className="px-4 py-6 flex-1">
+      <View className="px-4 pt-4 flex-1">
         {!selectedSheet ? (
           <WorkoutSheetList
             sheets={sheets}
@@ -231,7 +231,7 @@ const Home = () => {
             onReorder={handleReorder}
           />
         ) : !selectedPlan ? (
-          <View className="space-y-6 pb-24">
+          <View className="space-y-4 pb-20">
             <View className="flex flex-row items-center gap-2">
               <Button
                 variant="link"
@@ -298,7 +298,7 @@ const Home = () => {
               {areAllExercisesCompleted() ? (
                 <Button
                   onPress={resetCompleted}
-                  className="-mt-6 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   <Text className="dark:text-white">Finalizar Exercícios</Text>
                 </Button>
@@ -307,7 +307,7 @@ const Home = () => {
                   {/* Botão de próximo exercício */}
                   <Button
                     onPress={handleNextExercise}
-                    className="-mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                   >
                     <CustomText className="dark:text-white">Próximo Exercício</CustomText>
                   </Button>
@@ -354,7 +354,7 @@ const Home = () => {
         </View>
       </Modal>
      {!selectedPlan?.exercises && (
-       <View className="flex flex-row items-center justify-around p-4 mb-40">
+       <View className="flex flex-row border-t-1 bg-slate-100 dark:bg-slate-800 items-center justify-around p-4 mb-[14%]">
        <Button
          onPress={() => backupData()}
          className="px-4 py-2 bg-blue-200 text-white rounded hover:bg-blue-300"
