@@ -5,7 +5,8 @@ export interface Exercise {
   reps: number;
   weight: number;
   notes?: string;
-  completed?: boolean
+  completed?: boolean;
+  gifUrl?: string;
 }
 
 export interface WorkoutPlan {

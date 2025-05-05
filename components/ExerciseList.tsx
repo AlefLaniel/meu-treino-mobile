@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, FlatList, Alert, Modal, useColorScheme } from "react-native";
+import { View, TouchableOpacity, FlatList, Alert, Modal, useColorScheme, Image } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Exercise } from "../types/workout";
 import { Checkbox } from "./ui/checkbox";
@@ -15,6 +15,7 @@ import ExerciseForm from "./forms/ExerciseForm";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import CustomTextRoboto from "./CustomTextRoboto";
 import CustomText from "./CustomTextQuicksand";
+import ExerciceModal from "./modais/ExerciceModal";
 
 interface Props {
   exercises: Exercise[];
@@ -38,6 +39,17 @@ export default function ExerciseList({
 
   const [newExercises, setNewExercises] = useState<Exercise[]>(exercises);
 
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+
+  const handleOpenModal = (exercise: Exercise) => {
+    setSelectedExercise(exercise);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedExercise(null);
+  };
+
+
   useEffect(() => {
     setNewExercises(exercises);
   }, [exercises]);
@@ -53,6 +65,11 @@ export default function ExerciseList({
         opacity: isActive ? 0.8 : 1,
       }}
     >
+      <TouchableOpacity
+        onPress={() => handleOpenModal(item)}
+        className={`flex-row justify-between items-start ${isActive ? "bg-gray-300" : "bg-white dark:bg-gray-800"}`}
+        activeOpacity={0.8}
+      >
       <CardContent className="flex-row justify-between items-start">
         <View className="flex-1">
           <TouchableOpacity
@@ -71,6 +88,7 @@ export default function ExerciseList({
               {item.name}
             </CustomTextRoboto>
           </TouchableOpacity>
+
 
           <View className="grid grid-cols-3 gap-2">
             <CustomText className="text-sm text-gray-600">
@@ -122,6 +140,7 @@ export default function ExerciseList({
           </TouchableOpacity>
         </View>
       </CardContent>
+      </TouchableOpacity>
     </Card>
   );
 
@@ -169,7 +188,7 @@ export default function ExerciseList({
 
   return (
     <View className="p-4">
-<DraggableFlatList
+    <DraggableFlatList
         className="space-y-4"
         data={newExercises}
         renderItem={renderExercise}
@@ -188,7 +207,16 @@ export default function ExerciseList({
         )}
       />
 
-
+<Modal
+        visible={!!selectedExercise}
+        transparent
+        animationType="slide"
+        onRequestClose={handleCloseModal}
+      >
+        {selectedExercise && (
+          <ExerciceModal exercise={selectedExercise} onClose={handleCloseModal} />
+        )}
+      </Modal>
     </View>
   );
 }
