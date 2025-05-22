@@ -79,14 +79,21 @@ const Home = () => {
     setIsRestModalVisible(false);
   };
 
-  const handleToggleCompletion = (id: string, completed: boolean) => {
-    handleToggleExerciseCompletion(id);
-    if (!completed && !areAllExercisesCompleted()) {
+const handleToggleCompletion = (id: string, completed: boolean) => {
+  handleToggleExerciseCompletion(id);
+
+  const idx = selectedPlan?.exercises.findIndex(e => e.id === id) ?? 0;
+  setCurrentExerciseIndex(idx);
+
+  // Só inicia descanso se estiver marcando como concluído (não ao desmarcar)
+  if (!completed) {
+    if (!areAllExercisesCompleted()) {
       startRestTimer();
-    } else if (areAllExercisesCompleted()) {
+    } else {
       stopRestTimer();
     }
-  };
+  }
+};
 
   const handleGeneratePDF = async () => {
     try {
@@ -170,32 +177,37 @@ const Home = () => {
   };
 
 
-  const handleNextExercise = () => {
-    if (selectedPlan && selectedPlan.exercises.length > 0) {
-      const currentExercise = selectedPlan.exercises[currentExerciseIndex];
-      handleToggleCompletion(currentExercise.id, false);
-      const nextIndex = currentExerciseIndex + 1;
-  
-      if (nextIndex >= selectedPlan.exercises.length) {
-        showMessage({
-          message: "Parabéns!",
-          description: "Você concluiu todos os exercícios!",
-          type: "success",
-          duration: 3000,
-          icon: "success",  
-        });
-        stopRestTimer();
-        setCurrentExerciseIndex(0);
-      } else {
-        setCurrentExerciseIndex(nextIndex);
-        startRestTimer();
-      }
+const handleNextExercise = () => {
+  if (selectedPlan && selectedPlan.exercises.length > 0) {
+    // Sempre pega o primeiro exercício não concluído na ordem
+    const indexToMark = selectedPlan.exercises.findIndex((ex) => !ex.completed);
 
-      // setTimeout(() => {
-      //   stopRestTimer();
-      // }, 300);
+    // Se todos concluídos
+    if (indexToMark === -1) {
+      showMessage({
+        message: "Parabéns!",
+        description: "Você concluiu todos os exercícios!",
+        type: "success",
+        duration: 3000,
+        icon: "success",
+      });
+      stopRestTimer();
+      setCurrentExerciseIndex(0);
+      return;
     }
-  };
+
+    // Marca o exercício encontrado como concluído
+    const exerciseToMark = selectedPlan.exercises[indexToMark];
+    if (exerciseToMark && !exerciseToMark.completed) {
+      handleToggleExerciseCompletion(exerciseToMark.id);
+    }
+
+    setCurrentExerciseIndex(indexToMark);
+
+    // Inicia descanso
+    startRestTimer();
+  }
+};
 
   const areAllExercisesCompleted = () => {
     return selectedPlan?.exercises.every((exercise) => exercise.completed);
@@ -293,7 +305,7 @@ const Home = () => {
               onReorder={handleReorderExercises}
               handleToggleCompletion={handleToggleCompletion}
             />
-            <View className="flex justify-between">
+            <View className="flex justify-between -mb-6">
               {/* Botão de reset */}
               {areAllExercisesCompleted() ? (
                 <Button
@@ -354,7 +366,21 @@ const Home = () => {
         </View>
       </Modal>
      {!selectedPlan?.exercises && (
-       <View className="flex flex-row border-t-1 bg-slate-100 dark:bg-slate-800 items-center justify-around p-4 mb-[14%]">
+       <View 
+       style={{
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      padding: 16,
+      gap: 12,
+      width: '100%',
+      backgroundColor: isDarkMode ? '#1e293b' : '#f1f5f9',
+      borderTopWidth: 1,
+      borderColor: isDarkMode ? '#334155' : '#e5e7eb',
+      marginBottom: 60,
+    }}
+       >
        <Button
          onPress={() => backupData()}
          className="px-4 py-2 bg-blue-200 text-white rounded hover:bg-blue-300"
