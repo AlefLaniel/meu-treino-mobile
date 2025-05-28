@@ -7,6 +7,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Button } from "../ui/button";
 import CustomText from "../CustomTextQuicksand";
 import { Image } from "expo-image";
+import * as FileSystem from 'expo-file-system';
 
 interface Props {
   exercise?: Exercise | null | undefined;
@@ -22,19 +23,29 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
   const [notes, setNotes] = useState(exercise?.notes ?? "");
   const [image, setImage] = useState<string | null>(exercise?.gifUrl ?? null);
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker.launchImageLibraryAsync({
+
+
+  const handlePickGif = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images", "videos"],
       quality: 1,
     });
+    if (result.assets && result.assets[0]) {
+      const sourceUri = result.assets[0].uri;
+      const fileName = sourceUri.split('/').pop();
+      const destPath = FileSystem.documentDirectory + 'gifs/' + fileName;
 
-    console.log(result);
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
+    // Cria a pasta se não existir
+    await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'gifs/', { intermediates: true });
+
+    // Copia o arquivo para a pasta persistente
+    await FileSystem.copyAsync({ from: sourceUri, to: destPath });
+
+    // Salve destPath no exercício
+    setImage(destPath);
+  }
+};
 
   const handleSubmit = () => {
     onSubmit({
@@ -53,7 +64,7 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
         <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">
           GIF do Exercício
         </Text>
-        <TouchableOpacity onPress={pickImage} className="mb-2">
+        <TouchableOpacity onPress={handlePickGif} className="mb-2">
           {image ? (
             <Image
               source={{ uri: image }}
@@ -61,7 +72,7 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
               className="rounded-md"
             />
           ) : (
-            <Button variant="outline" className="w-full" onPress={pickImage}>
+            <Button variant="outline" className="w-full" onPress={handlePickGif}>
               <CustomText className="text-gray-700">Escolher GIF</CustomText>
             </Button>
           )}
