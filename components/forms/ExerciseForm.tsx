@@ -8,6 +8,10 @@ import { Button } from "../ui/button";
 import CustomText from "../CustomTextQuicksand";
 import { Image } from "expo-image";
 import * as FileSystem from 'expo-file-system';
+import { Picker } from '@react-native-picker/picker';
+import { presetExercises } from "~/data/presetExercises";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 interface Props {
   exercise?: Exercise | null | undefined;
@@ -47,6 +51,13 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
   }
 };
 
+const grouped = presetExercises.reduce((acc, ex) => {
+  if (!acc[ex.category]) acc[ex.category] = [];
+  acc[ex.category].push(ex);
+  return acc;
+}, {} as Record<string, typeof presetExercises>);
+
+
   const handleSubmit = () => {
     onSubmit({
       name,
@@ -83,6 +94,61 @@ export default function ExerciseForm({ exercise, onSubmit, onCancel }: Props) {
           </TouchableOpacity>
         )}
       </View>
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant='outline'>
+      <Text>
+        {name ? name : "Selecione um exercício pré-definido"}
+      </Text>
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className='w-64 native:w-72'>
+    <DropdownMenuLabel>Categorias de Exercícios</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuGroup>
+       {/* Opção para limpar seleção */}
+      <DropdownMenuItem
+        onPress={() => {
+          setName("");
+          setSets(3);
+          setReps(12);
+          setWeight(0);
+          setNotes("");
+          setImage(null);
+        }}
+      >
+        <Text style={{ color: "#888" }}>Nenhum (limpar seleção)</Text>
+      </DropdownMenuItem>
+      {Object.entries(grouped).map(([category, exercises]) => (
+        <DropdownMenuSub key={category}>
+          <DropdownMenuSubTrigger>
+            <Text>{category}</Text>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <Animated.View entering={FadeIn.duration(200)}>
+              {exercises.map((item) => (
+                <DropdownMenuItem
+                  key={item.name}
+                  onPress={() => {
+                    setName(item.name);
+                    setSets(item.sets);
+                    setReps(item.reps);
+                    setWeight(item.weight);
+                    setNotes(item.notes || "");
+                    setImage(item.gifUrl || null);
+                  }}
+                >
+                  <Text>{item.name}</Text>
+                </DropdownMenuItem>
+              ))}
+            </Animated.View>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+      ))}
+    </DropdownMenuGroup>
+  </DropdownMenuContent>
+</DropdownMenu>
 
       <View className="mb-4">
         <Text className="text-sm font-medium text-gray-700 mb-2 dark:text-white">
