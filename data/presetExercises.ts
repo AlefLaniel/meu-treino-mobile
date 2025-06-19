@@ -27,15 +27,83 @@ Importante: Mantenha sempre a postura correta, evitando arqueamento excessivo da
     sets: 4,
     reps: 10,
     weight: 0,
-    notes: `O supino inclinado com halteres é um excelente exercício para desenvolver a parte superior do peitoral, focando especialmente na porção clavicular do peitoral maior, além de recrutar o deltoide anterior e o tríceps braquial.
-Execução correta do supino inclinado com halteres
-- Posição inicial: Sente-se em um banco inclinado (entre 30° e 45°) e segure um haltere em cada mão.
-- Pegada e postura: Mantenha os halteres alinhados ao nível do peito, com os cotovelos dobrados e as palmas voltadas para frente.
-- Descida controlada: Abaixe os halteres lentamente até que fiquem ao nível do peito ou ligeiramente abaixo, mantendo o controle do movimento.
-- Subida explosiva: Empurre os halteres para cima em um movimento controlado, estendendo os braços sem travar completamente os cotovelos.
-- Respiração: Inspire ao descer os halteres e expire ao empurrá-los para cima, garantindo melhor estabilidade e ativação muscular.
-`,
-    gifUrl: "https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/supino-inclinado-com-halteres.gif", // Pinterest[2]
+    notes: `O supino inclinado com halteres prioriza a porção superior do peitoral, além de recrutar ombros e tríceps.  
+- Posição inicial: Banco inclinado a 30–45°, halteres apoiados no colo.  
+- Descida: Abaixe os halteres ao lado do peito, mantendo cotovelos ligeiramente flexionados.  
+- Subida: Empurre unindo levemente os halteres no topo, sem encostar um no outro.  
+- Respiração: Inspire na descida, expire na subida.  
+Evite inclinações acima de 45° para não sobrecarregar demais os ombros.`,
+    gifUrl: "https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/supino-inclinado-com-halteres.gif",
+  },
+  {
+    category: "Peito",
+    name: "Supino Declinado com Barra",
+    sets: 4,
+    reps: 10,
+    weight: 0,
+    notes: `O supino declinado foca a parte inferior do peitoral e reduz a participação dos ombros.  
+- Posição inicial: Banco declinado de 15–30°, pés apoiados.  
+- Descida: Leve a barra até a região inferior do tórax, mantendo coluna neutra.  
+- Subida: Empurre até quase extensão total dos braços, sem travar os cotovelos.  
+- Respiração: Inspire ao descer, expire ao subir.  
+Mantenha a lombar levemente apoiada para evitar lesões.`,
+    gifUrl: "https://www.hipertrofia.org/blog/wp-content/uploads/2018/09/barbell-decline-bench-press.gif",
+  },
+  {
+    category: "Peito",
+    name: "Crucifixo com Halteres",
+    sets: 4,
+    reps: 12,
+    weight: 0,
+    notes: `O crucifixo com halteres enfatiza o alongamento e a amplitude do peitoral maior.  
+- Posição inicial: Banco reto (ou inclinado), braços estendidos com cotovelos levemente flexionados.  
+- Descida: Abra os braços em arco até sentir bom alongamento no peito.  
+- Subida: Una os halteres contraindo o peitoral, sem bater um no outro.  
+- Respiração: Inspire descendo, expire subindo.  
+Mantenha o movimento lento e controlado, cotovelos sempre fixos.`,
+    gifUrl: "https://www.hipertrofia.org/blog/wp-content/uploads/2023/09/dumbbell-fly.gif",
+  },
+  {
+    category: "Peito",
+    name: "Crossover na Polia",
+    sets: 4,
+    reps: 12,
+    weight: 0,
+    notes: `O crossover isola e mantém tensão constante no peitoral.  
+- Posição inicial: Polias ajustadas no alto, tronco levemente inclinado à frente.  
+- Execução: Puxe ambas as alças em arco até as mãos se cruzarem à frente do corpo.  
+- Retorno: Volte controladamente à posição inicial, mantendo o peitoral contraído.  
+- Respiração: Inspire na volta, expire na contração.  
+Varie a altura das polias (alto, médio, baixo) para diferentes ênfases.`,
+    gifUrl: "https://i0.wp.com/meutreinador.com/wp-content/uploads/2024/04/Crossover-polia-alta.gif?fit=1080%2C1080&ssl=1",
+  },
+  {
+    category: "Peito",
+    name: "Mergulho em Paralelas (Dips)",
+    sets: 4,
+    reps: 10,
+    weight: 0,
+    notes: `O dip em paralelas, inclinado à frente, trabalha a parte inferior e média do peitoral.  
+- Posição inicial: Apoie-se nas barras com braços estendidos, corpo levemente inclinado.  
+- Descida: Flexione cotovelos até ~90°, sentindo alongamento no peito.  
+- Subida: Estenda os braços sem travar totalmente os cotovelos.  
+- Respiração: Inspire descendo, expire subindo.  
+Para aumentar a carga, use cinto com anilhas.`,
+    gifUrl: "https://static.wixstatic.com/media/2edbed_970bcb4dea734e9a9915ee3010726bb3~mv2.gif/v1/fill/w_360,h_360,al_c,pstr/2edbed_970bcb4dea734e9a9915ee3010726bb3~mv2.gif",
+  },
+  {
+    category: "Peito",
+    name: "Flexão de Braço (Push-Up)",
+    sets: 4,
+    reps: 15,
+    weight: 0,
+    notes: `A flexão de braço é um exercício versátil para peitoral, ombros e tríceps.  
+- Posição inicial: Corpo alinhado da cabeça aos calcanhares, mãos na largura dos ombros.  
+- Descida: Abaixe o peito em direção ao chão mantendo cotovelos a 45°.  
+- Subida: Empurre até estender os braços, sem travar os cotovelos.  
+- Respiração: Inspire descendo, expire subindo.  
+Varie elevando os pés para mais dificuldade ou apoiando joelhos para reduzir carga.`,
+    gifUrl: "https://newr7-r7-prod.web.arc-cdn.net/resizer/v2/TXD3PVKK65C75CP2TTUIZ4IWWQ.gif?smart=true&auth=05157f8994ca71ef885232d2eec1503ccd49498cca69a1ef21f2df885ae84db0&width=1200&height=630",
   },
 
   // PERNAS

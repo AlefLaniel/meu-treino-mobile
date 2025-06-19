@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, FlatList, Alert, Modal, useColorScheme, Image } from "react-native";
+import { View, TouchableOpacity, FlatList, Alert, Modal, useColorScheme, Image, ScrollView } from "react-native";
 import { Plus } from "~/lib/icons/Plus";
 import { Exercise } from "../types/workout";
 import { Checkbox } from "./ui/checkbox";
@@ -103,7 +103,9 @@ export default function ExerciseList({
           </View>
 
           {item.notes && (
-            <CustomText className="mt-2 text-sm text-gray-500">{item.notes}</CustomText>
+            <ScrollView className="h-28">
+              <CustomText className="mt-2 text-sm text-gray-500">{item.notes.substring(0, 90) + '...'}</CustomText>
+            </ScrollView>
           )}
         </View>
         <View className="flex-row gap-2">

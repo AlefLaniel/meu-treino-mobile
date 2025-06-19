@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Image } from "expo-image";
 
 interface Exercise {
@@ -41,10 +41,15 @@ const ExerciceModal = ({ exercise, onClose }: Props) => {
         <Text className="text-base text-gray-700 dark:text-gray-300 mb-2">
           <Text className="font-medium">Peso:</Text> {exercise.weight} kg
         </Text>
-        {exercise.notes && (
-          <Text className="text-base text-gray-700 dark:text-gray-300 mb-4">
-            <Text className="font-medium">Notas:</Text> {exercise.notes}
-          </Text>
+        <Text className="font-bold">Notas:</Text>
+         {exercise.notes && (
+          <View style={{ maxHeight: 120, marginBottom: 16 }}>
+            <ScrollView>
+              <Text className="text-base text-gray-700 dark:text-gray-300">
+                 {exercise.notes}
+              </Text>
+            </ScrollView>
+          </View>
         )}
         <TouchableOpacity
           onPress={onClose}
