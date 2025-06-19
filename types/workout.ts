@@ -7,6 +7,7 @@ export interface Exercise {
   notes?: string;
   completed?: boolean;
   gifUrl?: string;
+  category?: string;
 }
 
 export interface WorkoutPlan {
